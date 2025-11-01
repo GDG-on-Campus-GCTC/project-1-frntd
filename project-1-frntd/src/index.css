@@ -1,6 +1,5 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=Alan+Sans:wght@300..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Varela+Round&display=swap');
 @tailwind utilities;
-
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -138,4 +137,101 @@ body, html, #root {
   body {
     @apply bg-background text-foreground;
   }
+}
+/* Import modern fonts */
+
+/* Main heading - Ultra smooth animation */
+.welcome-text {
+  font-family: 'Varela Round', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 00;
+  line-height: 1.2;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0px 0px 6px rgba(255, 255, 255, 0.7);
+  letter-spacing: -0.02em;
+  display: inline-block;
+  width: 100%;
+  animation: breathe 4s ease-in-out infinite 1.5s;
+  /* Performance optimizations */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  /* Remove overflow that causes border box */
+  overflow: visible !important;
+}
+
+/* Subtle breathing animation */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+    text-shadow: 0px 0px 6px rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    transform: scale(1.02) translateZ(0);
+    text-shadow: 
+      0px 0px 8px rgba(255, 255, 255, 0.8),
+      0px 0px 15px rgba(230, 230, 250, 0.4);
+  }
+}
+
+/* Subtitle with smooth animation */
+.subtitle-text {
+  font-family: 'Varela Round', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  color: #b4b4b4;
+  text-align: center;
+  letter-spacing: 0.02em;
+  display: inline-block;
+  width: 100%;
+  animation: breathe-subtitle 4s ease-in-out infinite 1.5s;
+  /* Performance optimizations */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  /* Remove overflow that causes border box */
+  overflow: visible !important;
+}
+
+/* Subtle breathing for subtitle */
+@keyframes breathe-subtitle {
+  0%, 100% {
+    transform: scale(1) translateZ(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.015) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* Split text character styling - Smooth performance */
+.split-char {
+  display: inline-block;
+  transform-origin: center center;
+  will-change: transform, opacity;
+  opacity: 0;
+  /* GPU acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.split-word {
+  display: inline-block;
+  white-space: nowrap;
+  margin-right: 0.3em;
+  opacity: 0;
+  /* GPU acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Parent container - NO OVERFLOW HIDDEN */
+.split-parent {
+  width: 100%;
+  display: inline-block;
+  overflow: visible !important;
 }

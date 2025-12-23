@@ -1,0 +1,181 @@
+.about-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: #0a0a0a;
+  overflow-x: hidden;
+}
+
+.about-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 24px 60px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.about-content {
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Hero Section */
+.about-hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.about-title {
+  font-family: 'Varela Round', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f9fafb;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.about-subtitle {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 1.125rem;
+  color: #9ca3af;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Section Styling */
+.about-section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-family: 'Varela Round', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.3px;
+}
+
+.section-content {
+  font-family: 'Ubuntu', sans-serif;
+  color: #d1d5db;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.section-content p {
+  margin: 0 0 16px 0;
+}
+
+.section-content strong {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+/* Tech List */
+.tech-list {
+  margin: 16px 0;
+  padding-left: 24px;
+  list-style: disc;
+}
+
+.tech-list li {
+  margin-bottom: 8px;
+  color: #d1d5db;
+  line-height: 1.6;
+}
+/* Disclaimer Section */
+.disclaimer-section {
+  margin-top: 60px;
+  margin-bottom: 48px;
+}
+
+.disclaimer-content {
+  background: rgba(30, 30, 35, 0.6);
+  border: 1px solid rgba(176, 150, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px 32px;
+  backdrop-filter: blur(10px);
+}
+
+.disclaimer-title {
+  font-family: 'Varela Round', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.2px;
+}
+
+.disclaimer-text {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.disclaimer-link {
+  color: rgba(176, 150, 255, 0.9);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  border-bottom: 1px solid rgba(176, 150, 255, 0.3);
+}
+
+.disclaimer-link:hover {
+  color: rgba(176, 150, 255, 1);
+  border-bottom-color: rgba(176, 150, 255, 0.8);
+}
+/* About Footer */
+.about-footer {
+  text-align: center;
+  margin-top: 60px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-footer p {
+  color: #9ca3af;
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 75px 20px 50px;
+  }
+
+  .about-title {
+    font-size: 2rem;
+  }
+
+  .about-subtitle {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-container {
+    padding: 70px 16px 40px;
+  }
+
+  .about-title {
+    font-size: 1.75rem;
+  }
+
+  .about-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+}

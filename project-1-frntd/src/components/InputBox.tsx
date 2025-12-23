@@ -2,37 +2,50 @@ import React, { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import './InputBox.css';
 
-const ProjectInputBox: React.FC = () => {
+interface InputBoxProps {
+  onSendMessage: (message: string) => void;
+  hasMessages?: boolean;
+}
+
+const ProjectInputBox: React.FC<InputBoxProps> = ({ onSendMessage, hasMessages = false }) => {
   const [input, setInput] = useState('');
 
-  return (
-    <div className="projectinput-main">
-      <div className="projectinput-box">
-        <div className="input-row">
-          <TextareaAutosize
-            className="projectinput-textarea"
-            placeholder="Ask a question..."
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            minRows={1}
-            maxRows={6}
-            style={{
-              resize: "none",
-              overflowY: "auto",
-              // maxHeight: "180px",
-              width: "100%",
-              borderRadius: "12px",
-              padding: "10px",
-              fontSize: "16px",
-              background: "transparent",
-              border: "1px solid #3e3e42",
-            }}
-          />
+  const handleSend = () => {
+    if (input.trim()) {
+      onSendMessage(input.trim());
+      setInput('');
+    }
+  };
 
-          <button className="projectinput-send" title="Send">
-            <span style={{ fontSize: 22 }}>↑</span>
-          </button>
-        </div>
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className={`projectinput-main ${hasMessages ? 'with-messages' : ''}`}>
+      <div className="projectinput-box">
+        <TextareaAutosize
+          className="projectinput-textarea"
+          placeholder="Ask a Question..."
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          minRows={1}
+          maxRows={6}
+        />
+        <button 
+          className="projectinput-send" 
+          title="Send message"
+          onClick={handleSend}
+          disabled={!input.trim()}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
       </div>
     </div>
   );

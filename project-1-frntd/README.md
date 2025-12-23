@@ -1,16 +1,48 @@
-# React + Vite
+# GCTC Study Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered learning companion for GCTC exam preparation. This platform provides students with intelligent study assistance using a custom AI model trained on previous exam papers.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **AI Chat Interface** - Interactive Q&A powered by AI trained on GCTC exam papers
+- **User Authentication** - Secure login system with session management
+- **Smooth Animations** - GSAP-powered transitions and effects
+- **Navigation** - Easy access to Home, About, and Contact pages
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React + TypeScript** - Modern UI framework with type safety
+- **Vite** - Fast build tool and dev server
+- **React Router** - Client-side routing
+- **GSAP** - Animation library
+- **Tailwind CSS** - Utility-first CSS framework
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Project Structure
+
+- `/src/components` - Reusable React components
+- `/src/assets` - Static assets (images, icons)
+- `/src/*.tsx` - Main pages (Home, About, Contact)
+- `/src/*.css` - Component and page styles
+
+## Pages
+
+- **Home** - AI chat interface for study questions
+- **About** - Project overview and team information
+- **Contact** - Social media links and email contact
+
+---
+
+Built by GDG on Campus GCTC for students, by students.

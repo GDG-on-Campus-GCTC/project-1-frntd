@@ -1,20 +1,28 @@
 
 .projectinput-main {
-  position: relative; /* changed from absolute */
-  width: 100vw;
-  min-height: 100vh;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding-top: 60px;
   padding-bottom: 40px;
   box-sizing: border-box;
   background: transparent;
-  margin-top: 50px;
-  z-index: 10;
+  z-index: 20;
+  transition: all 0.3s ease;
 }
+
+.projectinput-main.with-messages {
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, transparent 100%);
+  padding-bottom: 30px;
+}
+
 .projectinput-title {
+  font-family: 'Varela Round', sans-serif;
   font-size: 2.7rem;
   font-weight: 700;
   margin-bottom: 45px;
@@ -24,69 +32,101 @@
 }
 
 .projectinput-box {
+  position: relative;
   width: 90%;
-  max-width: 500px;
-  background: #1c1c1f;
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  padding: 18px 18px;
-  margin-bottom: 34px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(176, 150, 255, 0.4);
-  box-shadow: 0 0 20px rgba(176, 150, 255, 0.25), 0 2px 10px rgba(0,0,0,0.05);
-
-}
-
-.projectinput-textarea {
-  flex: 1 1 auto;   /* makes textarea grow to fill row */
-  width: 100%;
-  overflow-y: auto;
-  max-height: 180px;
-}
-.projectinput-send {
-  /* Keep as-is for tight alignment; or tweak margins to reduce gap if needed */
-  margin-left: 7px;
-  border-radius: 50%;
-  margin-bottom: 12px;
-}
-
-.input-row {
-  display: flex;
-  align-items: flex-end; /* aligns textarea and button bottom */
-  gap: 8px;
-  width: 100%;
-}
-.projectinput-textarea {
-  background: none;
-  border: none;
-  outline: none;
-  color: #ececec;
-  font-size: 1.25rem;
-  resize: none;
-  min-height: 36px;
-  width: 100%;
-}
-
-.projectinput-actions {
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 18px 20px;
+  padding-right: 60px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 2%;
+  border: 1.5px solid rgba(176, 150, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
 }
+
+.projectinput-box:hover {
+  border-color: rgba(176, 150, 255, 0.4);
+  box-shadow: 0 6px 32px rgba(176, 150, 255, 0.15), 0 0 0 1px rgba(176, 150, 255, 0.1);
+}
+
+.projectinput-box:focus-within {
+  border-color: rgba(176, 150, 255, 0.6);
+  box-shadow: 0 8px 40px rgba(176, 150, 255, 0.2), 0 0 0 1px rgba(176, 150, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.projectinput-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f5f5f5;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  resize: none;
+  min-height: 24px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.projectinput-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.projectinput-textarea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.projectinput-textarea::-webkit-scrollbar-thumb {
+  background: rgba(176, 150, 255, 0.3);
+  border-radius: 10px;
+}
+
 .projectinput-send {
-  background: #232326;
-  color: #d4d4fd;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #b096ff 0%, #9575ff 100%);
+  color: white;
+  border: none;
   border-radius: 50%;
-  padding: 7px 12px;
-  font-size: 1.1rem;
-  border: 1px solid rgba(176, 150, 255, 0.4);
-  box-shadow: 0 0 20px rgba(176, 150, 255, 0.25), 0 2px 10px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(176, 150, 255, 0.4);
 }
-.projectinput-send:hover {
-  background: #2d2d37;
+
+.projectinput-send:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(176, 150, 255, 0.5);
+  background: linear-gradient(135deg, #c0a6ff 0%, #a585ff 100%);
+}
+
+.projectinput-send:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.projectinput-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: rgba(176, 150, 255, 0.3);
+  box-shadow: none;
+}
+
+.projectinput-send svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
 }
 
 .projectinput-options {
@@ -97,24 +137,52 @@
   justify-content: flex-start;
   flex-wrap: wrap;
 }
-.projectinput-main {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  min-height: 100vh;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px; /* controls distance from top */
-  box-sizing: border-box;
-  background: transparent; /* leave blending for chat box only */
-}
-.projectinput-textarea {
-  max-height: 180px;
-  overflow-y: auto;
-  resize: none;
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .projectinput-box {
+    width: 92%;
+    max-width: 100%;
+    padding: 12px 18px;
+    padding-right: 56px;
+    border-radius: 24px;
+  }
   
+  .projectinput-textarea {
+    font-size: 15px;
+  }
+  
+  .projectinput-send {
+    width: 34px;
+    height: 34px;
+    right: 10px;
+    bottom: 10px;
+  }
 }
+
+@media (max-width: 480px) {
+  .projectinput-box {
+    width: 94%;
+    padding: 11px 16px;
+    padding-right: 52px;
+    border-radius: 22px;
+  }
+  
+  .projectinput-textarea {
+    font-size: 14px;
+  }
+  
+  .projectinput-send {
+    width: 32px;
+    height: 32px;
+    right: 8px;
+    bottom: 9px;
+  }
+  
+  .projectinput-send svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 

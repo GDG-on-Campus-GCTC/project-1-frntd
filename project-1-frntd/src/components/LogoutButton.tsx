@@ -1,11 +1,12 @@
-import React from 'react';
 import './LogoutButton.css';
+import { useNavigate } from "react-router-dom";
 
 const LogoutButton: React.FC = () => {
+  const navigate = useNavigate();
+  
   const handleLogout = () => {
-    console.log('Logging out...');
-    localStorage.clear();
-    window.location.href = '/';
+    sessionStorage.clear();
+    navigate('/login');
   };
 
   return (

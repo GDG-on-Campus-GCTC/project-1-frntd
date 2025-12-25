@@ -1,11 +1,37 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import {
+    Cpu,
+    Globe,
+    Database,
+    Code2,
+    Workflow,
+    Bot,
+    Layers,
+    Network,
+    Terminal,
+    Zap
+} from 'lucide-react';
 import ChatMessage from './components/ChatMessage';
 import InputBox from './components/InputBox';
 import SubjectCard from './components/SubjectCard';
+import LogoLoop from './components/LogoLoop';
 import logo from './assets/logo.png';
 import './Home.css';
+
+const techIcons = [
+    { node: <Cpu size={24} />, title: "CPU" },
+    { node: <Globe size={24} />, title: "Network" },
+    { node: <Database size={24} />, title: "Database" },
+    { node: <Code2 size={24} />, title: "Coding" },
+    { node: <Workflow size={24} />, title: "Logic" },
+    { node: <Bot size={24} />, title: "AI" },
+    { node: <Layers size={24} />, title: "Structure" },
+    { node: <Network size={24} />, title: "Connectivity" },
+    { node: <Terminal size={24} />, title: "Terminal" },
+    { node: <Zap size={24} />, title: "Performance" }
+];
 
 const subjects = [
     { id: 'daa', name: 'DAA', emoji: '🧮', color: '#3b82f6', desc: 'Algorithms & Complexity', count: 24 },
@@ -232,8 +258,20 @@ function Home() {
                             </div>
                         )}
                     </div>
-                    <div style={{ padding: '1rem' }}>
+                    <div style={{ padding: '1rem', paddingBottom: '0' }}>
                         <InputBox onSend={handleSend} />
+                    </div>
+                    <div className="decoration-loop">
+                        <LogoLoop
+                            logos={techIcons}
+                            speed={40}
+                            direction="left"
+                            logoHeight={24}
+                            gap={40}
+                            scaleOnHover
+                            fadeOut
+                            fadeOutColor="#1a1a1a"
+                        />
                     </div>
                 </section>
 

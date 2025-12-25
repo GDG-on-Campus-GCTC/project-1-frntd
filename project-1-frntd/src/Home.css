@@ -300,3 +300,15 @@
         grid-template-columns: 1fr;
     }
 }
+
+.decoration-loop {
+    margin: 1.5rem auto;
+    width: 100%;
+    max-width: 48rem;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.decoration-loop:hover {
+    opacity: 1;
+}

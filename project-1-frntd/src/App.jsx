@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from "./components/Login";
+import Signup from "./components/signup";
 import Home from "./Home";
 import About from "./About";
 import Contact from "./Contact";
@@ -17,6 +18,11 @@ function App() {
             {/* Login page */}
             <Route path="/login" element={
                 isLoggedIn ? <Navigate to="/home" replace /> : <Login />
+            } />
+
+            {/* Signup page (same redirect behavior as Login) */}
+            <Route path="/signup" element={
+                isLoggedIn ? <Navigate to="/home" replace /> : <Signup />
             } />
 
             {/* Protected routes */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logo from './assets/logo.png';
 import './Landing.css';
@@ -15,9 +15,22 @@ const Landing = () => {
                         <img src={logo} alt="GCTC Workspace" />
                         <span>GCTC Workspace</span>
                     </div>
-                    <button className="nav-btn" onClick={() => navigate('/login')}>
-                        Sign In
-                    </button>
+                    <div className="nav-actions">
+                        <div className="nav-right">
+                            <button className="nav-btn" onClick={() => navigate('/login')}>
+                                Sign In
+                            </button>
+
+                            {/* added Sign Up button — uses same class and position */}
+                            <button
+                                className="nav-btn"
+                                onClick={() => navigate('/signup')}
+                                style={{ marginLeft: 8 }}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </nav>
 
@@ -34,12 +47,11 @@ const Landing = () => {
                     <p className="hero-subtitle">
                         Ask anything, create anything
                     </p>
-                    <button className="cta-button" onClick={() => navigate('/login')}>
-                        Get Started
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                    </button>
+                    <div className="hero-cta">
+                        <Link to="/signup" className="cta-btn" aria-label="Get Started">
+                            Get Started &rarr;
+                        </Link>
+                    </div>
                 </motion.div>
 
                 <motion.div

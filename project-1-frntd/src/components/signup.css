@@ -1,0 +1,102 @@
+/* filepath: [signup.css](http://_vscodecontentref_/0) */
+
+:root{
+  --primary: var(--primary-color, #2563eb);
+  --text: var(--text-color, #e6eef8);
+  --muted: #9aa3b2;
+  --card-bg: rgba(255,255,255,0.02);
+  --radius: 12px;
+}
+
+.signup-page{
+  font-family: inherit;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:calc(100vh - 0px);
+  padding:48px 16px;
+  color:var(--text);
+  background:transparent;
+}
+
+.signup-card{
+  width:100%;
+  max-width:520px;
+  background:var(--card-bg);
+  border-radius:var(--radius);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  padding:32px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.signup-title{
+  margin:0 0 18px 0;
+  font-size:1.25rem;
+  font-weight:700;
+  color:var(--text);
+}
+
+.btn{
+  display:inline-flex;
+  width:100%;
+  align-items:center;
+  justify-content:center;
+  padding:12px 14px;
+  border-radius:8px;
+  border:1px solid transparent;
+  cursor:pointer;
+  font-weight:700;
+  margin-top:12px;
+  font-family: inherit;
+}
+
+.btn.primary{
+  background:var(--primary);
+  color:#fff;
+  box-shadow: 0 6px 18px rgba(37,99,235,0.15);
+}
+
+.google-btn{
+  background:#fff;
+  color:#111;
+  border-radius:8px;
+  padding:10px 12px;
+}
+
+.divider{
+  text-align:center;
+  margin:12px 0;
+  color:var(--muted);
+  font-size:0.95rem;
+}
+
+.signup-form .field{
+  display:block;
+  margin-bottom:12px;
+  font-size:0.95rem;
+  color:var(--muted);
+}
+
+.signup-form input{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.06);
+  font:inherit;
+  box-sizing:border-box;
+  background:transparent;
+  color:var(--text);
+}
+
+.row{ display:flex; gap:12px; }
+.row .field{ flex:1; }
+
+.form-error{ color:#ff6b6b; margin-bottom:8px; font-size:0.9rem; }
+
+.signin-note{ text-align:center; margin-top:14px; color:var(--muted); font-size:0.95rem; }
+
+@media (max-width:480px){
+  .row{ flex-direction:column; }
+  .signup-card{ padding:20px; }
+}

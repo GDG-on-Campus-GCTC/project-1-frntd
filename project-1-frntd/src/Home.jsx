@@ -45,12 +45,19 @@ const subjects = [
 function Home() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
     const [sessions, setSessions] = useState([]);
     const [currentSessionId, setCurrentSessionId] = useState(null);
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
+
+    // Auto-close sidebar on mobile after selecting something
+    const closeSidebarIfMobile = () => {
+        if (window.innerWidth <= 768) {
+            setSidebarOpen(false);
+        }
+    };
 
     // Auto-scroll to bottom of messages only (not whole page)
     const scrollToLatestMessage = () => {
@@ -137,16 +144,19 @@ function Home() {
         handleSend(`Show ${subject.name} resources`);
         // Scroll to chat section after clicking subject card
         setTimeout(() => scrollToChatSection(), 100);
+        closeSidebarIfMobile();
     };
 
     const handleNewChat = () => {
         setMessages([]);
         setCurrentSessionId(null);
+        closeSidebarIfMobile();
     };
 
     const handleLoadSession = (session) => {
         setCurrentSessionId(session.id);
         setMessages(session.messages);
+        closeSidebarIfMobile();
     };
 
     const handleDeleteSession = (sessionId, e) => {
@@ -160,11 +170,25 @@ function Home() {
 
     return (
         <div className="home">
+            {/* Mobile Backdrop */}
+            <AnimatePresence>
+                {sidebarOpen && window.innerWidth <= 768 && (
+                    <motion.div
+                        className="sidebar-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* Sidebar */}
             <motion.aside
                 className="sidebar"
-                initial={{ x: -300 }}
-                animate={{ x: sidebarOpen ? 0 : -300 }}
+                initial={{ x: -280 }}
+                animate={{ x: sidebarOpen ? 0 : -280 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 100 }}
             >
                 <div className="sidebar-top">
                     <img src={logo} alt="GCTC" />
@@ -199,6 +223,18 @@ function Home() {
                             </button>
                         </div>
                     ))}
+                </div>
+
+                <div className="sidebar-subjects">
+                    <h3>Quick Access</h3>
+                    <div className="sidebar-subjects-grid">
+                        {subjects.map(sub => (
+                            <div key={sub.id} className="sidebar-subject-item" onClick={() => handleSubjectClick(sub)}>
+                                <span className="item-emoji">{sub.emoji}</span>
+                                <span className="item-name">{sub.name}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <nav>

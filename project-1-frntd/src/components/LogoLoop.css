@@ -141,3 +141,10 @@
         transition: none !important;
     }
 }
+
+@media (max-width: 768px) {
+    .logoloop {
+        --logoloop-gap: 20px;
+        --logoloop-logoHeight: 18px;
+    }
+}

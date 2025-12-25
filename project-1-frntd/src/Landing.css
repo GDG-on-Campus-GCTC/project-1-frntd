@@ -150,6 +150,19 @@
 }
 
 @media (max-width: 768px) {
+    .nav-container {
+        padding: 1rem;
+    }
+
+    .landing-main {
+        padding: 5rem 1.25rem 3rem;
+        gap: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem;
+    }
+
     .features {
         grid-template-columns: 1fr;
     }

@@ -150,6 +150,66 @@
     background: rgba(255, 255, 255, 0.05);
 }
 
+/* Sidebar Subjects (Mobile Only) */
+.sidebar-subjects {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: none;
+    /* Hidden by default on desktop */
+}
+
+@media (max-width: 768px) {
+    .sidebar-subjects {
+        display: block;
+    }
+}
+
+.sidebar-subjects h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b6b6b;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+}
+
+.sidebar-subjects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.sidebar-subject-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0.75rem;
+    padding: 0.625rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sidebar-subject-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.sidebar-subject-item .item-emoji {
+    font-size: 1.125rem;
+}
+
+.sidebar-subject-item .item-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Main */
 .main {
     flex: 1;
@@ -211,7 +271,7 @@
 }
 
 .welcome h1 {
-    font-size: 3rem;
+    font-size: clamp(1.75rem, 8vw, 3rem);
     font-weight: 700;
 }
 
@@ -293,20 +353,61 @@
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
-        z-index: 100;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+        border-right: none;
     }
 
-    .subjects .grid {
-        grid-template-columns: 1fr;
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 999;
+    }
+
+    .main {
+        width: 100%;
+    }
+
+    .menu-btn {
+        background: rgba(36, 36, 36, 0.8);
+        backdrop-filter: blur(8px);
+    }
+
+    .chat-container {
+        padding: 4rem 0.75rem 1rem;
+    }
+
+    .welcome {
+        padding: 2rem 1rem;
+    }
+
+    .welcome img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .subjects {
+        display: none;
     }
 }
 
 .decoration-loop {
-    margin: 1.5rem auto;
+    margin: 1rem auto;
     width: 100%;
     max-width: 48rem;
     opacity: 0.6;
     transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .decoration-loop {
+        margin: 0.5rem auto;
+    }
 }
 
 .decoration-loop:hover {

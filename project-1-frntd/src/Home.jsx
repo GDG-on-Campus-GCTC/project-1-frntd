@@ -59,6 +59,19 @@ function Home() {
         }
     };
 
+    // Handle window resize for sidebar state
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 768) {
+                setSidebarOpen(true);
+            } else {
+                setSidebarOpen(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Auto-scroll to bottom of messages only (not whole page)
     const scrollToLatestMessage = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });

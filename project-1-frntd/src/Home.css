@@ -353,6 +353,8 @@
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
+        left: 0;
+        top: 0;
         width: 280px;
         height: 100vh;
         z-index: 1000;

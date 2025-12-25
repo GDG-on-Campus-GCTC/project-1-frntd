@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import Login from "./components/Login";
 import Home from "./Home";
 import About from "./About";
 import Contact from "./Contact";
-import Login from "./components/Login";
+import Landing from "./Landing";
 
 function App() {
     const location = useLocation();
@@ -10,24 +11,23 @@ function App() {
 
     return (
         <Routes location={location}>
+            {/* Landing page - public */}
+            <Route path="/" element={<Landing />} />
+
             {/* Login page */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={
+                isLoggedIn ? <Navigate to="/home" replace /> : <Login />
+            } />
 
-            {/* Home/dashboard – only if logged in */}
-            <Route
-                path="/"
-                element={
-                    isLoggedIn ? <Home /> : <Navigate to="/login" replace />
-                }
-            />
+            {/* Protected routes */}
+            <Route path="/home" element={
+                isLoggedIn ? <Home /> : <Navigate to="/login" replace />
+            } />
 
-            {/* About page – publicly accessible */}
             <Route path="/about" element={<About />} />
-
-            {/* Contact page – publicly accessible */}
             <Route path="/contact" element={<Contact />} />
 
-            {/* Catch-all: send to home, which will itself redirect to /login if not logged in */}
+            {/* Catch all */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

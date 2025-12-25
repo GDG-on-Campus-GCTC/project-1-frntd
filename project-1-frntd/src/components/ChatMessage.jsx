@@ -1,18 +1,21 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import './ChatMessage.css';
 
-const ChatMessage = ({ content, role, timestamp }) => {
+const ChatMessage = ({ content, role, time }) => {
     return (
-        <div className={`chat-message-wrapper ${role}`}>
-            <div className={`chat-message ${role}`}>
-                <div className="message-content">{content}</div>
-                {timestamp && (
-                    <div className="message-timestamp">
-                        {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                )}
-            </div>
-        </div>
+        <motion.div
+            className={`message ${role}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+        >
+            <div className="message-content">{content}</div>
+            {time && (
+                <div className="message-time">
+                    {new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </div>
+            )}
+        </motion.div>
     );
 };
 

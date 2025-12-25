@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import BackButton from './components/BackButton';
 import './Contact.css';
 
@@ -56,54 +57,59 @@ const Contact = () => {
         }
     ];
 
+    const fadeInUp = {
+        initial: { opacity: 0, y: 30 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+    };
+
     return (
         <div className="contact-page">
             <BackButton />
             <div className="contact-container">
-                <div className="contact-content">
-                    {/* Hero Section */}
-                    <section className="contact-hero">
-                        <h1 className="contact-title">Get in Touch</h1>
-                        <p className="contact-subtitle">
-                            Connect with us on social media
-                        </p>
-                    </section>
+                <motion.div {...fadeInUp} className="contact-hero">
+                    <h1 className="contact-title">Get in Touch</h1>
+                    <p className="contact-subtitle">
+                        Connect with us on social media
+                    </p>
+                </motion.div>
 
-                    {/* Email Section */}
-                    <section className="contact-section email-section">
-                        <h2 className="section-title">Email Us</h2>
-                        <a href="https://mail.google.com/mail/?view=cm&to=gdgoc@gcet.edu.in" target="_blank" rel="noopener noreferrer" className="email-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <rect width="20" height="16" x="2" y="4" rx="2" />
-                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                            </svg>
-                            <span>gdgoc@gcet.edu.in</span>
-                        </a>
-                    </section>
-                    {/* Social Links Section */}
-                    <section className="contact-section">
-                        <h2 className="section-title">Find Us On</h2>
-                        <div className="social-links">
-                            {socialLinks.map((social) => (
-                                <a
-                                    key={social.name}
-                                    href={social.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="social-link"
-                                    style={{ '--social-color': social.color }}
-                                >
-                                    <div className="social-icon">{social.icon}</div>
-                                    <span className="social-name">{social.name}</span>
-                                </a>
-                            ))}
-                        </div>
-                    </section>
-                    {/* Footer */}
-                    <section className="contact-footer">
-                        <p>© 2025 GDG on Campus GCTC. Built for students, by students.</p>
-                    </section>
-                </div>
+                <motion.section {...fadeInUp} transition={{ delay: 0.1, duration: 0.6 }} className="contact-section email-section">
+                    <h2 className="section-title">Email Us</h2>
+                    <a href="https://mail.google.com/mail/?view=cm&to=gdgoc@gcet.edu.in" target="_blank" rel="noopener noreferrer" className="email-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect width="20" height="16" x="2" y="4" rx="2" />
+                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                        </svg>
+                        <span>gdgoc@gcet.edu.in</span>
+                    </a>
+                </motion.section>
+
+                <motion.section {...fadeInUp} transition={{ delay: 0.2, duration: 0.6 }} className="contact-section">
+                    <h2 className="section-title">Find Us On</h2>
+                    <div className="social-links">
+                        {socialLinks.map((social, index) => (
+                            <motion.a
+                                key={social.name}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="social-link"
+                                style={{ '--social-color': social.color }}
+                            >
+                                <div className="social-icon">{social.icon}</div>
+                                <span className="social-name">{social.name}</span>
+                            </motion.a>
+                        ))}
+                    </div>
+                </motion.section>
+
+                <footer className="contact-footer">
+                    <p>© 2025 GDG on Campus GCTC. Built for students, by students.</p>
+                </footer>
             </div>
         </div>
     );

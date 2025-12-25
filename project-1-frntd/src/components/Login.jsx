@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Mail, Phone, Lock, Chrome, ArrowRight } from 'lucide-react';
 import logo from "../assets/logo.png";
 import "./Login.css";
 
@@ -73,10 +74,29 @@ const Login = () => {
                         />
                     </div>
 
-                    <button type="submit" disabled={loading}>
+                    <button type="submit" disabled={loading} className="submit-btn">
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                 </form>
+
+                <div className="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div className="auth-options">
+                    <button className="google-auth-btn" onClick={() => console.log('Google Auth Triggered')}>
+                        <Chrome size={18} />
+                        Google
+                    </button>
+                    <button className="phone-auth-btn" onClick={() => console.log('Phone Auth Requested')}>
+                        <Phone size={18} />
+                        Phone
+                    </button>
+                </div>
+
+                <p className="auth-footer">
+                    Don't have an account? <span onClick={() => navigate('/signup')}>Sign Up</span>
+                </p>
             </motion.div>
         </div>
     );

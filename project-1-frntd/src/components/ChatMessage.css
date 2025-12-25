@@ -24,10 +24,11 @@
 }
 
 .message.user .message-content {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, #6366f1, #a855f7);
   color: #fff;
   border-radius: 1.5rem 1.5rem 0.25rem 1.5rem;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .message.assistant .message-content {

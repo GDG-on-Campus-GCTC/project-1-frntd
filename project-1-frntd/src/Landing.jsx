@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Cpu, BookOpen, Target, ArrowRight } from 'lucide-react';
 import logo from './assets/logo.png';
 import './Landing.css';
 
@@ -36,9 +37,7 @@ const Landing = () => {
                     </p>
                     <button className="cta-button" onClick={() => navigate('/login')}>
                         Get Started
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
+                        <ArrowRight size={20} />
                     </button>
                 </motion.div>
 
@@ -49,9 +48,9 @@ const Landing = () => {
                     className="features"
                 >
                     {[
-                        { icon: '🤖', title: 'AI Assistant', desc: 'Instant answers from GCTC exam papers' },
-                        { icon: '📚', title: 'Study Resources', desc: 'Previous papers and study materials' },
-                        { icon: '🎯', title: 'Subject-Wise', desc: 'Organized by subject - DAA, OS, DBMS' }
+                        { icon: <Cpu size={32} />, title: 'AI Assistant', desc: 'Instant answers from GCTC exam papers' },
+                        { icon: <BookOpen size={32} />, title: 'Study Resources', desc: 'Previous papers and study materials' },
+                        { icon: <Target size={32} />, title: 'Subject-Wise', desc: 'Organized by subject - DAA, OS, DBMS' }
                     ].map((feature, i) => (
                         <div key={i} className="feature-card">
                             <div className="feature-icon">{feature.icon}</div>

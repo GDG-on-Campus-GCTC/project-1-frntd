@@ -49,11 +49,33 @@ const Landing = () => {
                     className="features"
                 >
                     {[
-                        { icon: '🤖', title: 'AI Assistant', desc: 'Instant answers from GCTC exam papers' },
-                        { icon: '📚', title: 'Study Resources', desc: 'Previous papers and study materials' },
-                        { icon: '🎯', title: 'Subject-Wise', desc: 'Organized by subject - DAA, OS, DBMS' }
+                        {
+                            icon: '🤖',
+                            title: 'AI Assistant',
+                            desc: 'Instant answers from GCTC exam papers',
+                            path: '/home'
+                        },
+                        {
+                            icon: '📚',
+                            title: 'Study Resources',
+                            desc: 'Previous papers and study materials',
+                            url: 'https://drive.google.com/drive/folders/1hHSxzNXOez99YtKFlXODwxCL4Ok0xXdN'
+                        },
+                        {
+                            icon: '🎯',
+                            title: 'Subject-Wise',
+                            desc: 'Organized by subject - DAA, OS, DBMS, TOC'
+                        }
                     ].map((feature, i) => (
-                        <div key={i} className="feature-card">
+                        <div
+                            key={i}
+                            className="feature-card"
+                            onClick={() => {
+                                if (feature.path) navigate(feature.path);
+                                if (feature.url) window.open(feature.url, '_blank');
+                            }}
+                            style={{ cursor: (feature.path || feature.url) ? 'pointer' : 'default' }}
+                        >
                             <div className="feature-icon">{feature.icon}</div>
                             <h3>{feature.title}</h3>
                             <p>{feature.desc}</p>
@@ -70,3 +92,4 @@ const Landing = () => {
 };
 
 export default Landing;
+

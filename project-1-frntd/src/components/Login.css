@@ -106,3 +106,20 @@ button[type="submit"]:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.login-footer {
+  text-align: center;
+  margin-top: 24px;
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.login-footer span {
+  color: #fff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.login-footer span:hover {
+  color: #3b82f6;
+}

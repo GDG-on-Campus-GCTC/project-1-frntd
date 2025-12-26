@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import { sendChatMessage } from './services/apiService';
 import {
     Cpu,
     Globe,
@@ -54,9 +56,11 @@ function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
     const [sessions, setSessions] = useState([]);
     const [currentSessionId, setCurrentSessionId] = useState(null);
+    const [sessionId, setSessionId] = useState(null);
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     // Auto-close sidebar on mobile after selecting something
     const closeSidebarIfMobile = () => {
@@ -106,14 +110,22 @@ function Home() {
         return words.length > 30 ? words.substring(0, 30) + '...' : words;
     };
 
-    const handleSend = async (content) => {
-        const userMsg = { id: Date.now(), content, role: 'user', time: new Date() };
+    const handleSend = async ({ message, files }) => {
+        // Create user message
+        const userMsg = {
+            id: Date.now(),
+            content: message,
+            role: 'user',
+            time: new Date(),
+            files: files?.length > 0 ? files.map(f => f.name) : undefined
+        };
         const newMessages = [...messages, userMsg];
         setMessages(newMessages);
         setLoading(true);
 
+        // Create or update session
         if (messages.length === 0) {
-            const sessionName = generateSessionName(content);
+            const sessionName = generateSessionName(message);
             const newSession = {
                 id: Date.now(),
                 name: sessionName,
@@ -122,35 +134,92 @@ function Home() {
             };
             setSessions(prev => [newSession, ...prev]);
             setCurrentSessionId(newSession.id);
+            setSessionId(`session_${newSession.id}`);
         } else {
             setSessions(prev => prev.map(s =>
                 s.id === currentSessionId ? { ...s, messages: newMessages } : s
             ));
         }
 
-        setTimeout(() => {
-            const aiMsg = {
-                id: Date.now() + 1,
-                content: `Based on GCTC exam papers: ${content}\n\nI recommend reviewing key concepts and practicing similar problems.`,
-                role: 'assistant',
-                time: new Date()
-            };
+        // Call real API
+        try {
+            const response = await sendChatMessage({
+                message,
+                userId: user?.id || user?.email || 'anonymous',
+                sessionId: sessionId || `session_${currentSessionId || Date.now()}`,
+                conversationId: currentSessionId?.toString(),
+                files: files || []
+            });
+
+            let aiMsg;
+
+            if (response.success) {
+                // Success response
+                aiMsg = {
+                    id: Date.now() + 1,
+                    content: response.data.content,
+                    role: 'assistant',
+                    time: new Date(),
+                    images: response.data.images,
+                    metadata: response.data.metadata
+                };
+            } else {
+                // Error response
+                aiMsg = {
+                    id: Date.now() + 1,
+                    content: '',
+                    role: 'assistant',
+                    time: new Date(),
+                    error: response.error
+                };
+            }
+
             const updatedMessages = [...newMessages, aiMsg];
             setMessages(updatedMessages);
 
             setSessions(prev => prev.map(s =>
                 s.id === currentSessionId ? { ...s, messages: updatedMessages } : s
             ));
+        } catch (error) {
+            // Unexpected error
+            const errorMsg = {
+                id: Date.now() + 1,
+                content: '',
+                role: 'assistant',
+                time: new Date(),
+                error: {
+                    message: 'An unexpected error occurred. Please try again.',
+                    code: 'UNEXPECTED_ERROR',
+                    retryable: true
+                }
+            };
+            const updatedMessages = [...newMessages, errorMsg];
+            setMessages(updatedMessages);
 
+            setSessions(prev => prev.map(s =>
+                s.id === currentSessionId ? { ...s, messages: updatedMessages } : s
+            ));
+        } finally {
             setLoading(false);
-        }, 1500);
+        }
     };
 
     const handleSubjectClick = (subject) => {
-        handleSend(`Show ${subject.name} resources`);
+        handleSend({ message: `Show ${subject.name} resources`, files: [] });
         // Scroll to chat section after clicking subject card
         setTimeout(() => scrollToChatSection(), 100);
         closeSidebarIfMobile();
+    };
+
+    const handleRetry = (messageId) => {
+        // Find the user message before this error message
+        const msgIndex = messages.findIndex(m => m.id === messageId);
+        if (msgIndex > 0) {
+            const userMsg = messages[msgIndex - 1];
+            // Remove error message and resend
+            setMessages(prev => prev.filter(m => m.id !== messageId));
+            handleSend({ message: userMsg.content, files: [] });
+        }
     };
 
     const handleNewChat = () => {
@@ -284,7 +353,11 @@ function Home() {
                             <div className="messages">
                                 <AnimatePresence>
                                     {messages.map(msg => (
-                                        <ChatMessage key={msg.id} {...msg} />
+                                        <ChatMessage
+                                            key={msg.id}
+                                            {...msg}
+                                            onRetry={msg.error?.retryable ? () => handleRetry(msg.id) : undefined}
+                                        />
                                     ))}
                                 </AnimatePresence>
                                 {loading && (
@@ -301,7 +374,7 @@ function Home() {
                         )}
                     </div>
                     <div style={{ padding: '1rem', paddingBottom: '0' }}>
-                        <InputBox onSend={handleSend} />
+                        <InputBox onSend={handleSend} disabled={loading} />
                     </div>
                     <div className="decoration-loop">
                         <LogoLoop

@@ -18,8 +18,13 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = (userData) => {
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+        // Ensure user has an ID field
+        const userWithId = {
+            ...userData,
+            id: userData.id || userData.email || `user_${Date.now()}`
+        };
+        setUser(userWithId);
+        localStorage.setItem('user', JSON.stringify(userWithId));
         sessionStorage.setItem('isLoggedIn', 'true');
     };
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { API_CONFIG } from '../config/api-config';
 
 const AuthContext = createContext();
 
@@ -7,14 +8,33 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for existing session on mount
-        const savedUser = localStorage.getItem('user');
-        const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+        const checkAuthStatus = async () => {
+            try {
+                const response = await fetch(API_CONFIG.AUTH.STATUS, {
+                    credentials: 'include'
+                });
 
-        if (savedUser && isLoggedIn) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
+                if (response.ok) {
+                    const userData = await response.json();
+                    setUser(userData);
+                    // Also sync local storage if needed, or rely purely on backend
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                } else {
+                    // clear session if backend says not logged in
+                    setUser(null);
+                    localStorage.removeItem('user');
+                    sessionStorage.removeItem('isLoggedIn');
+                }
+            } catch (error) {
+                console.error("Failed to check auth status", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuthStatus();
     }, []);
 
     const login = (userData) => {
@@ -28,10 +48,20 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem('isLoggedIn', 'true');
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('user');
-        sessionStorage.removeItem('isLoggedIn');
+    const logout = async () => {
+        try {
+            await fetch(API_CONFIG.AUTH.LOGOUT, {
+                method: 'POST', // or GET depending on backend, usually logout is POST or GET. Assuming GET or POST based on typical REST. User said "hit the api".
+                credentials: 'include'
+            });
+        } catch (error) {
+            console.error('Logout failed', error);
+        } finally {
+            setUser(null);
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('isLoggedIn');
+            // Assuming the caller will handle navigation or state change affects the app
+        }
     };
 
     return (

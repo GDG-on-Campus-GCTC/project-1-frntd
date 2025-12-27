@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import socketService from './services/socketService';
 import {
     Cpu,
     Globe,
@@ -54,9 +56,12 @@ function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
     const [sessions, setSessions] = useState([]);
     const [currentSessionId, setCurrentSessionId] = useState(null);
+    const [sessionId, setSessionId] = useState(null);
+    const [streamingMessageId, setStreamingMessageId] = useState(null);
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     // Auto-close sidebar on mobile after selecting something
     const closeSidebarIfMobile = () => {
@@ -74,6 +79,17 @@ function Home() {
     const scrollToChatSection = () => {
         chatSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
+
+    // Initialize WebSocket connection
+    useEffect(() => {
+        socketService.connect().catch(err => {
+            console.error('Failed to connect to WebSocket:', err);
+        });
+
+        return () => {
+            socketService.disconnect();
+        };
+    }, []);
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -106,14 +122,22 @@ function Home() {
         return words.length > 30 ? words.substring(0, 30) + '...' : words;
     };
 
-    const handleSend = async (content) => {
-        const userMsg = { id: Date.now(), content, role: 'user', time: new Date() };
+    const handleSend = async ({ message, files }) => {
+        // Create user message
+        const userMsg = {
+            id: Date.now(),
+            content: message,
+            role: 'user',
+            time: new Date(),
+            files: files?.length > 0 ? files.map(f => f.name) : undefined
+        };
         const newMessages = [...messages, userMsg];
         setMessages(newMessages);
         setLoading(true);
 
+        // Create or update session
         if (messages.length === 0) {
-            const sessionName = generateSessionName(content);
+            const sessionName = generateSessionName(message);
             const newSession = {
                 id: Date.now(),
                 name: sessionName,
@@ -122,35 +146,112 @@ function Home() {
             };
             setSessions(prev => [newSession, ...prev]);
             setCurrentSessionId(newSession.id);
+            setSessionId(`session_${newSession.id}`);
         } else {
             setSessions(prev => prev.map(s =>
                 s.id === currentSessionId ? { ...s, messages: newMessages } : s
             ));
         }
 
-        setTimeout(() => {
-            const aiMsg = {
-                id: Date.now() + 1,
-                content: `Based on GCTC exam papers: ${content}\n\nI recommend reviewing key concepts and practicing similar problems.`,
-                role: 'assistant',
-                time: new Date()
-            };
-            const updatedMessages = [...newMessages, aiMsg];
-            setMessages(updatedMessages);
+        // Create placeholder AI message for streaming
+        const aiMsgId = Date.now() + 1;
+        const aiMsg = {
+            id: aiMsgId,
+            content: '',
+            role: 'assistant',
+            time: new Date(),
+            isStreaming: true
+        };
 
-            setSessions(prev => prev.map(s =>
-                s.id === currentSessionId ? { ...s, messages: updatedMessages } : s
-            ));
+        const messagesWithPlaceholder = [...newMessages, aiMsg];
+        setMessages(messagesWithPlaceholder);
+        setStreamingMessageId(aiMsgId);
 
-            setLoading(false);
-        }, 1500);
+        // Send via WebSocket with streaming callbacks
+        socketService.sendMessage(
+            {
+                message,
+                userId: user?.id || user?.email || 'anonymous',
+                sessionId: sessionId || `session_${currentSessionId || Date.now()}`,
+                conversationId: currentSessionId?.toString(),
+                files: files || []
+            },
+            // onChunk - called for each streaming chunk
+            (content, meta) => {
+                setMessages(prev => prev.map(msg =>
+                    msg.id === aiMsgId
+                        ? { ...msg, content, isStreaming: true }
+                        : msg
+                ));
+            },
+            // onComplete - called when streaming finishes
+            (data) => {
+                const finalMsg = {
+                    id: aiMsgId,
+                    content: data.content,
+                    role: 'assistant',
+                    time: new Date(),
+                    images: data.images || [],
+                    metadata: data.metadata || {},
+                    isStreaming: false
+                };
+
+                setMessages(prev => prev.map(msg =>
+                    msg.id === aiMsgId ? finalMsg : msg
+                ));
+
+                setSessions(prev => prev.map(s =>
+                    s.id === currentSessionId
+                        ? { ...s, messages: prev }
+                        : s
+                ));
+
+                setStreamingMessageId(null);
+                setLoading(false);
+            },
+            // onError - called if error occurs
+            (error) => {
+                const errorMsg = {
+                    id: aiMsgId,
+                    content: '',
+                    role: 'assistant',
+                    time: new Date(),
+                    error: error,
+                    isStreaming: false
+                };
+
+                setMessages(prev => prev.map(msg =>
+                    msg.id === aiMsgId ? errorMsg : msg
+                ));
+
+                setSessions(prev => prev.map(s =>
+                    s.id === currentSessionId
+                        ? { ...s, messages: prev }
+                        : s
+                ));
+
+                setStreamingMessageId(null);
+                setLoading(false);
+            }
+        );
     };
 
     const handleSubjectClick = (subject) => {
-        handleSend(`Show ${subject.name} resources`);
+        handleSend({ message: `Show ${subject.name} resources`, files: [] });
         // Scroll to chat section after clicking subject card
         setTimeout(() => scrollToChatSection(), 100);
         closeSidebarIfMobile();
+    };
+
+    const handleRetry = (messageId) => {
+        // Find the user message before this error message
+        const msgIndex = messages.findIndex(m => m.id === messageId);
+        if (msgIndex > 0) {
+            const userMsg = messages[msgIndex - 1];
+            // Remove error message and resend
+            setMessages(prev => prev.filter(m => m.id !== messageId));
+            handleSend({ message: userMsg.content, files: [] });
+        }
     };
 
     const handleNewChat = () => {
@@ -284,7 +385,11 @@ function Home() {
                             <div className="messages">
                                 <AnimatePresence>
                                     {messages.map(msg => (
-                                        <ChatMessage key={msg.id} {...msg} />
+                                        <ChatMessage
+                                            key={msg.id}
+                                            {...msg}
+                                            onRetry={msg.error?.retryable ? () => handleRetry(msg.id) : undefined}
+                                        />
                                     ))}
                                 </AnimatePresence>
                                 {loading && (
@@ -301,7 +406,7 @@ function Home() {
                         )}
                     </div>
                     <div style={{ padding: '1rem', paddingBottom: '0' }}>
-                        <InputBox onSend={handleSend} />
+                        <InputBox onSend={handleSend} disabled={loading} />
                     </div>
                     <div className="decoration-loop">
                         <LogoLoop

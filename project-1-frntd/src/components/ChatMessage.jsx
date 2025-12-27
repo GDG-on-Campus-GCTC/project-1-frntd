@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './ChatMessage.css';
 
-const ChatMessage = ({ content, role, time, images = [], metadata = {}, error = null, onRetry }) => {
+const ChatMessage = ({ content, role, time, images = [], metadata = {}, error = null, onRetry, isStreaming = false }) => {
     return (
         <motion.div
             className={`message ${role} ${error ? 'error' : ''}`}
@@ -37,7 +37,10 @@ const ChatMessage = ({ content, role, time, images = [], metadata = {}, error = 
 
             {/* Text Content */}
             {content && (
-                <div className="message-content">{content}</div>
+                <div className="message-content">
+                    {content}
+                    {isStreaming && <span className="streaming-cursor">▊</span>}
+                </div>
             )}
 
             {/* Image Gallery */}

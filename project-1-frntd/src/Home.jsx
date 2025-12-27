@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import { sendChatMessage } from './services/apiService';
+import socketService from './services/socketService';
 import {
     Cpu,
     Globe,
@@ -57,6 +57,7 @@ function Home() {
     const [sessions, setSessions] = useState([]);
     const [currentSessionId, setCurrentSessionId] = useState(null);
     const [sessionId, setSessionId] = useState(null);
+    const [streamingMessageId, setStreamingMessageId] = useState(null);
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
@@ -78,6 +79,17 @@ function Home() {
     const scrollToChatSection = () => {
         chatSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
+
+    // Initialize WebSocket connection
+    useEffect(() => {
+        socketService.connect().catch(err => {
+            console.error('Failed to connect to WebSocket:', err);
+        });
+
+        return () => {
+            socketService.disconnect();
+        };
+    }, []);
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -141,67 +153,87 @@ function Home() {
             ));
         }
 
-        // Call real API
-        try {
-            const response = await sendChatMessage({
+        // Create placeholder AI message for streaming
+        const aiMsgId = Date.now() + 1;
+        const aiMsg = {
+            id: aiMsgId,
+            content: '',
+            role: 'assistant',
+            time: new Date(),
+            isStreaming: true
+        };
+
+        const messagesWithPlaceholder = [...newMessages, aiMsg];
+        setMessages(messagesWithPlaceholder);
+        setStreamingMessageId(aiMsgId);
+
+        // Send via WebSocket with streaming callbacks
+        socketService.sendMessage(
+            {
                 message,
                 userId: user?.id || user?.email || 'anonymous',
                 sessionId: sessionId || `session_${currentSessionId || Date.now()}`,
                 conversationId: currentSessionId?.toString(),
                 files: files || []
-            });
-
-            let aiMsg;
-
-            if (response.success) {
-                // Success response
-                aiMsg = {
-                    id: Date.now() + 1,
-                    content: response.data.content,
+            },
+            // onChunk - called for each streaming chunk
+            (content, meta) => {
+                setMessages(prev => prev.map(msg =>
+                    msg.id === aiMsgId
+                        ? { ...msg, content, isStreaming: true }
+                        : msg
+                ));
+            },
+            // onComplete - called when streaming finishes
+            (data) => {
+                const finalMsg = {
+                    id: aiMsgId,
+                    content: data.content,
                     role: 'assistant',
                     time: new Date(),
-                    images: response.data.images,
-                    metadata: response.data.metadata
+                    images: data.images || [],
+                    metadata: data.metadata || {},
+                    isStreaming: false
                 };
-            } else {
-                // Error response
-                aiMsg = {
-                    id: Date.now() + 1,
+
+                setMessages(prev => prev.map(msg =>
+                    msg.id === aiMsgId ? finalMsg : msg
+                ));
+
+                setSessions(prev => prev.map(s =>
+                    s.id === currentSessionId
+                        ? { ...s, messages: prev }
+                        : s
+                ));
+
+                setStreamingMessageId(null);
+                setLoading(false);
+            },
+            // onError - called if error occurs
+            (error) => {
+                const errorMsg = {
+                    id: aiMsgId,
                     content: '',
                     role: 'assistant',
                     time: new Date(),
-                    error: response.error
+                    error: error,
+                    isStreaming: false
                 };
+
+                setMessages(prev => prev.map(msg =>
+                    msg.id === aiMsgId ? errorMsg : msg
+                ));
+
+                setSessions(prev => prev.map(s =>
+                    s.id === currentSessionId
+                        ? { ...s, messages: prev }
+                        : s
+                ));
+
+                setStreamingMessageId(null);
+                setLoading(false);
             }
-
-            const updatedMessages = [...newMessages, aiMsg];
-            setMessages(updatedMessages);
-
-            setSessions(prev => prev.map(s =>
-                s.id === currentSessionId ? { ...s, messages: updatedMessages } : s
-            ));
-        } catch (error) {
-            // Unexpected error
-            const errorMsg = {
-                id: Date.now() + 1,
-                content: '',
-                role: 'assistant',
-                time: new Date(),
-                error: {
-                    message: 'An unexpected error occurred. Please try again.',
-                    code: 'UNEXPECTED_ERROR',
-                    retryable: true
-                }
-            };
-            const updatedMessages = [...newMessages, errorMsg];
-            setMessages(updatedMessages);
-
-            setSessions(prev => prev.map(s =>
-                s.id === currentSessionId ? { ...s, messages: updatedMessages } : s
-            ));
-        } finally {
-            setLoading(false);
-        }
+        );
     };
 
     const handleSubjectClick = (subject) => {

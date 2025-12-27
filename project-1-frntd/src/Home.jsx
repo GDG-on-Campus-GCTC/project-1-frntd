@@ -61,7 +61,7 @@ function Home() {
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     // Auto-close sidebar on mobile after selecting something
     const closeSidebarIfMobile = () => {
@@ -359,7 +359,7 @@ function Home() {
                     </a>
                 </nav>
 
-                <button className="logout" onClick={() => { sessionStorage.clear(); navigate('/'); }}>
+                <button className="logout" onClick={async () => { await logout(); navigate('/'); }}>
                     Logout
                 </button>
             </motion.aside>

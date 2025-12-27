@@ -1,5 +1,5 @@
-// API Service for Backend Communication
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { API_CONFIG } from '../config/api-config';
+
 const API_TIMEOUT = 30000; // 30 seconds
 
 /**
@@ -57,7 +57,7 @@ export const sendChatMessage = async ({ message, userId, sessionId, conversation
         const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
         // Make API request
-        const response = await fetch(`${API_BASE_URL}/chat`, {
+        const response = await fetch(API_CONFIG.CHAT.SEND, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

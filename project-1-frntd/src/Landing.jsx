@@ -49,25 +49,22 @@ const Landing = () => {
                 >
                     {[
                         {
-                            icon: '🤖',
+                            icon: <Cpu size={32} />,
                             title: 'AI Assistant',
                             desc: 'Instant answers from GCTC exam papers',
                             path: '/home'
                         },
                         {
-                            icon: '📚',
+                            icon: <BookOpen size={32} />,
                             title: 'Study Resources',
                             desc: 'Previous papers and study materials',
                             url: 'https://drive.google.com/drive/folders/1hHSxzNXOez99YtKFlXODwxCL4Ok0xXdN'
                         },
                         {
-                            icon: '🎯',
+                            icon: <Target size={32} />,
                             title: 'Subject-Wise',
                             desc: 'Organized by subject - DAA, OS, DBMS, TOC'
                         }
-                        { icon: <Cpu size={32} />, title: 'AI Assistant', desc: 'Instant answers from GCTC exam papers' },
-                        { icon: <BookOpen size={32} />, title: 'Study Resources', desc: 'Previous papers and study materials' },
-                        { icon: <Target size={32} />, title: 'Subject-Wise', desc: 'Organized by subject - DAA, OS, DBMS' }
                     ].map((feature, i) => (
                         <div
                             key={i}

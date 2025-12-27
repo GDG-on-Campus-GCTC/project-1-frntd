@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import './SubjectCard.css';
 
-const SubjectCard = ({ name, emoji, color, desc, count, onClick }) => {
+const SubjectCard = ({ name, icon, color, desc, count, onClick }) => {
     return (
         <motion.div
             className="subject-card"
@@ -10,7 +10,7 @@ const SubjectCard = ({ name, emoji, color, desc, count, onClick }) => {
             onClick={onClick}
             style={{ '--color': color }}
         >
-            <div className="card-emoji">{emoji}</div>
+            <div className="card-icon">{icon}</div>
             <h3>{name}</h3>
             <p>{desc}</p>
             <div className="card-footer">

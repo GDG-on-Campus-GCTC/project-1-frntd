@@ -11,12 +11,18 @@ import {
     Layers,
     Network,
     Terminal,
-    Zap
+    Zap,
+    Calculator,
+    Monitor,
+    BookOpen,
+    Target,
+    Settings
 } from 'lucide-react';
 import ChatMessage from './components/ChatMessage';
 import InputBox from './components/InputBox';
 import SubjectCard from './components/SubjectCard';
 import LogoLoop from './components/LogoLoop';
+import LightRays from './components/LightRays';
 import logo from './assets/logo.png';
 import './Home.css';
 
@@ -34,12 +40,12 @@ const techIcons = [
 ];
 
 const subjects = [
-    { id: 'daa', name: 'DAA', emoji: '🧮', color: '#3b82f6', desc: 'Algorithms & Complexity', count: 24 },
-    { id: 'os', name: 'Operating Systems', emoji: '💻', color: '#8b5cf6', desc: 'Process & Memory Management', count: 18 },
-    { id: 'dbms', name: 'DBMS', emoji: '🗄️', color: '#ec4899', desc: 'SQL & Database Design', count: 21 },
-    { id: 'cn', name: 'Computer Networks', emoji: '🌐', color: '#06b6d4', desc: 'TCP/IP & Routing', count: 15 },
-    { id: 'se', name: 'Software Engineering', emoji: '⚙️', color: '#f59e0b', desc: 'SDLC & Design Patterns', count: 12 },
-    { id: 'ml', name: 'Machine Learning', emoji: '🤖', color: '#10b981', desc: 'AI & Neural Networks', count: 16 }
+    { id: 'daa', name: 'DAA', icon: <Calculator size={22} />, color: '#6366f1', desc: 'Algorithms & Complexity', count: 24 },
+    { id: 'os', name: 'Operating Systems', icon: <Monitor size={22} />, color: '#a855f7', desc: 'Process & Memory Management', count: 18 },
+    { id: 'dbms', name: 'DBMS', icon: <Database size={22} />, color: '#ec4899', desc: 'SQL & Database Design', count: 21 },
+    { id: 'cn', name: 'Computer Networks', icon: <Network size={22} />, color: '#06b6d4', desc: 'TCP/IP & Routing', count: 15 },
+    { id: 'se', name: 'Software Engineering', icon: <Settings size={22} />, color: '#f59e0b', desc: 'SDLC & Design Patterns', count: 12 },
+    { id: 'ml', name: 'Machine Learning', icon: <Bot size={22} />, color: '#10b981', desc: 'AI & Neural Networks', count: 16 }
 ];
 
 function Home() {
@@ -58,19 +64,6 @@ function Home() {
             setSidebarOpen(false);
         }
     };
-
-    // Handle window resize for sidebar state
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth > 768) {
-                setSidebarOpen(true);
-            } else {
-                setSidebarOpen(false);
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     // Auto-scroll to bottom of messages only (not whole page)
     const scrollToLatestMessage = () => {
@@ -243,7 +236,7 @@ function Home() {
                     <div className="sidebar-subjects-grid">
                         {subjects.map(sub => (
                             <div key={sub.id} className="sidebar-subject-item" onClick={() => handleSubjectClick(sub)}>
-                                <span className="item-emoji">{sub.emoji}</span>
+                                <span className="item-icon">{sub.icon}</span>
                                 <span className="item-name">{sub.name}</span>
                             </div>
                         ))}
@@ -340,8 +333,18 @@ function Home() {
                         ))}
                     </div>
                 </section>
+                <LightRays
+                    raysOrigin="top-center"
+                    raysColor="#6366f1"
+                    raysSpeed={0.8}
+                    lightSpread={2.0}
+                    rayLength={2.5}
+                    pulsating={true}
+                    followMouse={true}
+                    mouseInfluence={0.15}
+                />
             </main>
-        </div>
+        </div >
     );
 }
 

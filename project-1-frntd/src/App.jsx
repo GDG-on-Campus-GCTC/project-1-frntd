@@ -4,10 +4,24 @@ import Home from "./Home";
 import About from "./About";
 import Contact from "./Contact";
 import Landing from "./Landing";
+import Signup from './components/Signup';
+import OTPVerify from './components/OTPVerify';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 function App() {
+    return (
+        <AuthProvider>
+            <AppRoutes />
+        </AuthProvider>
+    );
+}
+
+function AppRoutes() {
     const location = useLocation();
+    const { user, loading } = useAuth();
     const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
+
+    if (loading) return null; // Or a loader
 
     return (
         <Routes location={location}>
@@ -18,6 +32,12 @@ function App() {
             <Route path="/login" element={
                 isLoggedIn ? <Navigate to="/home" replace /> : <Login />
             } />
+
+            {/* Signup page */}
+            <Route path="/signup" element={<Signup />} />
+
+            {/* OTP Verification */}
+            <Route path="/otp-verify" element={<OTPVerify />} />
 
             {/* Protected routes */}
             <Route path="/home" element={

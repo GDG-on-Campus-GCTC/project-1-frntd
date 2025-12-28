@@ -6,8 +6,8 @@ export const API_CONFIG = {
         GOOGLE: `${API_BASE_URL}/auth/google`,
         STATUS: `${API_BASE_URL}/auth/status`,
         LOGOUT: `${API_BASE_URL}/auth/logout`,
-        SIGNUP_EMAIL: `${API_BASE_URL}/auth/signup/email`, // Placeholder if needed
-        SIGNUP_PHONE: `${API_BASE_URL}/auth/signup/phone`  // Placeholder if needed
+        LOGIN: `${API_BASE_URL}/auth/login`,
+        REGISTER: `${API_BASE_URL}/auth/register`
     },
     CHAT: {
         SEND: `${API_BASE_URL}/chat`, // Adjusted to match the new base if implied, or keep specific logic?

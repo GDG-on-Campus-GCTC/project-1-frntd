@@ -1,131 +1,225 @@
 .login-page {
   min-height: 100vh;
-  background: #1a1a1a;
+  /* Light minimal background */
+  background: #f8fafc;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+/* 
+  Creating the "Purple Gradient" organic shapes 
+  using pseudo-elements to mimic the vector art style 
+*/
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: -150px;
+  right: -100px;
+  width: 800px;
+  height: 600px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  opacity: 0.9;
+  z-index: 0;
+  filter: blur(60px);
+  /* Reduced blur for more defined "shape" like the vector image, 
+     or kept high for softer feel. The image had solid shapes.
+     Let's try a defined shape with soft edges. */
+  transform: rotate(-15deg);
+}
+
+.login-page::after {
+  content: '';
+  position: absolute;
+  bottom: -200px;
+  left: -150px;
+  width: 700px;
+  height: 600px;
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  /* Lighter blue-ish purple */
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  /* Or the purple/pink vibe */
+  background: linear-gradient(45deg, #764ba2, #667eea);
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  opacity: 0.8;
+  z-index: 0;
+  filter: blur(80px);
+  transform: rotate(20deg);
 }
 
 .login-card {
   width: 100%;
-  max-width: 420px;
-  padding: 3rem;
-  background: #242424;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
+  max-width: 900px;
+  /* Wider card for "split" look if we wanted, but keeping single column for now as per code structure */
+  max-width: 480px;
+  /* Standard centered card */
+  padding: 3.5rem;
+
+  /* Solid White Card */
+  background: #ffffff;
+  border-radius: 2rem;
+
+  /* Soft, heavy shadow for float effect */
+  box-shadow:
+    0 20px 50px rgba(76, 29, 149, 0.15),
+    /* Purple-tinted shadow */
+    0 10px 20px rgba(0, 0, 0, 0.05);
+
+  position: relative;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .login-logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
   margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px rgba(118, 75, 162, 0.2);
 }
 
 .login-header h1 {
-  font-size: 1.75rem;
+  font-size: 2.2rem;
   margin-bottom: 0.5rem;
-  color: #fff;
+  color: #1a202c;
+  /* Dark text */
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .login-header p {
-  color: #a0a0a0;
-  font-size: 0.9375rem;
+  color: #718096;
+  /* Gray text */
+  font-size: 1rem;
 }
 
 .login-error {
-  padding: 0.875rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1rem;
+  background: #fff5f5;
+  border-left: 4px solid #fc8181;
   border-radius: 0.5rem;
-  color: #fca5a5;
-  font-size: 0.875rem;
+  color: #c53030;
+  font-size: 0.9rem;
   margin-bottom: 1.5rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  font-size: 0.875rem;
+  margin-bottom: 0.6rem;
+  color: #4a5568;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  transition: all 0.2s;
+  padding: 1rem 1rem 1rem 3rem;
+
+  /* Light Input Styling */
+  background: #f7fafc;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+
+  color: #2d3748;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .input-with-icon {
   position: relative;
-  display: flex;
-  align-items: center;
 }
 
 .input-with-icon svg {
   position: absolute;
-  left: 1rem;
-  color: var(--text-tertiary);
-  pointer-events: none;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+  z-index: 2;
+  transition: color 0.3s ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--accent-blue);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  background: #ffffff;
+  border-color: #9f7aea;
+  /* Purple border */
+  box-shadow: 0 0 0 4px rgba(159, 122, 234, 0.15);
+}
+
+.form-group input:focus+svg,
+.form-group input:focus~svg {
+  color: #805ad5;
+  /* Purple icon */
 }
 
 .form-group input::placeholder {
-  color: #6b6b6b;
+  color: #cbd5e0;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 0.875rem;
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  padding: 1rem;
+  margin-top: 1rem;
+
+  /* Bold Purple Gradient */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: var(--radius-md);
-  font-weight: 600;
+  border-radius: 1rem;
+
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+
   cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -5px rgba(118, 75, 162, 0.4);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px -5px rgba(118, 75, 162, 0.5);
 }
 
-button[type="submit"]:disabled {
-  opacity: 0.6;
+.submit-btn:disabled {
+  opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
 }
 
 .divider {
   display: flex;
   align-items: center;
-  margin: 1.5rem 0;
-  color: var(--text-tertiary);
+  margin: 2rem 0;
+  color: #a0aec0;
   font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .divider::before,
@@ -133,7 +227,7 @@ button[type="submit"]:disabled {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--border-subtle);
+  background: #e2e8f0;
 }
 
 .divider span {
@@ -141,78 +235,107 @@ button[type="submit"]:disabled {
 }
 
 .auth-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-top: 2rem;
 }
 
-.google-auth-btn,
-.phone-auth-btn {
+.google-auth-btn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
+  gap: 1rem;
+  padding: 0.9rem;
+
+  background: #ffffff;
+  border: 2px solid #edf2f7;
+  border-radius: 1rem;
+
+  color: #4a5568;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
-.google-auth-btn:hover,
-.phone-auth-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--border-medium);
-  color: var(--text-primary);
+.google-auth-btn:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
 }
 
 .auth-footer {
   text-align: center;
-  margin-top: 1rem;
-  color: var(--text-tertiary);
-  font-size: 0.9rem;
+  margin-top: 2rem;
+  color: #718096;
+  font-size: 0.95rem;
 }
 
 .auth-footer span {
-  color: var(--accent-blue);
+  color: #667eea;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 700;
+  margin-left: 0.3rem;
+  transition: color 0.2s;
 }
 
 .auth-footer span:hover {
+  color: #764ba2;
   text-decoration: underline;
 }
 
-.auth-toggle {
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card>* {
+  animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.login-header {
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.auth-options {
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+/* OTP Input Specifics overriding default behavior for clean look */
+.otp-container {
   display: flex;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 0.25rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 1.5rem;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
 }
 
-.auth-toggle button {
-  flex: 1;
-  padding: 0.5rem;
-  border: none;
-  background: transparent;
-  color: var(--text-tertiary);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s;
+.otp-input {
+  width: 50px !important;
+  height: 60px;
+  border-radius: 12px;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  color: #2d3748;
+  font-size: 1.5rem !important;
+  font-weight: 700;
 }
 
-.auth-toggle button.active {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+.otp-input:focus {
+  border-color: #9f7aea;
+  box-shadow: 0 0 0 4px rgba(159, 122, 234, 0.15);
+  background: #fff;
 }
 
 .back-btn {
@@ -221,13 +344,16 @@ button[type="submit"]:disabled {
   left: 1.5rem;
   background: transparent;
   border: none;
-  color: var(--text-tertiary);
+  color: #a0aec0;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 50%;
 }
 
 .back-btn:hover {
-  color: var(--text-primary);
+  color: #4a5568;
+  background: #edf2f7;
 }
 
 .resend-btn {
@@ -237,37 +363,15 @@ button[type="submit"]:disabled {
   gap: 0.5rem;
   background: transparent;
   border: none;
-  color: var(--accent-blue);
-  font-size: 0.9rem;
-  font-weight: 500;
+  color: #667eea;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
   margin: 0 auto;
+  transition: color 0.2s;
 }
 
-.otp-container {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  margin: 1.5rem 0;
-}
-
-.otp-input {
-  width: 45px !important;
-  height: 55px;
-  text-align: center;
-  font-size: 1.5rem !important;
-  font-weight: 700;
-  padding: 0 !important;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  transition: all 0.2s;
-}
-
-.otp-input:focus {
-  outline: none;
-  border-color: var(--accent-blue);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+.resend-btn:hover {
+  color: #764ba2;
+  text-decoration: underline;
 }

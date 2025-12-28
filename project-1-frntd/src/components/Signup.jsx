@@ -26,10 +26,10 @@ const Signup = () => {
                     <p>Join GCTC Workspace</p>
                 </div>
 
-                <div className="auth-options" style={{ marginTop: '2rem' }}>
-                    <button className="google-auth-btn" onClick={handleGoogleSignup} style={{ width: '100%', justifyContent: 'center' }}>
-                        <Chrome size={18} />
-                        Sign up with Google
+                <div className="auth-options">
+                    <button className="google-auth-btn" onClick={handleGoogleSignup}>
+                        <Chrome size={20} />
+                        <span>Sign up with Google</span>
                     </button>
                 </div>
 

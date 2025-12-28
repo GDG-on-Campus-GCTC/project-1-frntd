@@ -6,6 +6,7 @@ import Contact from "./Contact";
 import Landing from "./Landing";
 import Signup from './components/Signup';
 import OTPVerify from './components/OTPVerify';
+import LoginFailure from './components/LoginFailure';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function App() {
@@ -32,6 +33,7 @@ function AppRoutes() {
             <Route path="/login" element={
                 isLoggedIn ? <Navigate to="/home" replace /> : <Login />
             } />
+            <Route path="/login-failure" element={<LoginFailure />} />
 
             {/* Signup page */}
             <Route path="/signup" element={<Signup />} />

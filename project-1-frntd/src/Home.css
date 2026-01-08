@@ -7,10 +7,13 @@
 }
 
 /* Sidebar */
+/* Sidebar - Floating Glass Design */
 .sidebar {
     width: 260px;
-    background: #242424;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(10, 10, 15, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(99, 102, 241, 0.1);
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -218,6 +221,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    position: relative;
 }
 
 .menu-btn {
@@ -332,7 +336,7 @@
 /* Subjects */
 .subjects {
     padding: 4rem 2rem;
-    background: #242424;
+    background: transparent;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -353,8 +357,6 @@
 @media (max-width: 768px) {
     .sidebar {
         position: fixed;
-        left: 0;
-        top: 0;
         width: 280px;
         height: 100vh;
         z-index: 1000;

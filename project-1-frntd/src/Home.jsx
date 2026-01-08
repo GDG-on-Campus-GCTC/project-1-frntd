@@ -57,7 +57,6 @@ function Home() {
     const [sessions, setSessions] = useState([]);
     const [currentSessionId, setCurrentSessionId] = useState(null);
     const [sessionId, setSessionId] = useState(null);
-    const [streamingMessageId, setStreamingMessageId] = useState(null);
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
@@ -128,109 +127,42 @@ function Home() {
             id: Date.now(),
             content: message,
             role: 'user',
-            time: new Date(),
-            files: files?.length > 0 ? files.map(f => f.name) : undefined
+            time: new Date()
         };
         const newMessages = [...messages, userMsg];
         setMessages(newMessages);
         setLoading(true);
 
-        // Create or update session
-        if (messages.length === 0) {
-            const sessionName = generateSessionName(message);
-            const newSession = {
-                id: Date.now(),
-                name: sessionName,
-                messages: newMessages,
-                createdAt: new Date()
-            };
-            setSessions(prev => [newSession, ...prev]);
-            setCurrentSessionId(newSession.id);
-            setSessionId(`session_${newSession.id}`);
-        } else {
-            setSessions(prev => prev.map(s =>
-                s.id === currentSessionId ? { ...s, messages: newMessages } : s
-            ));
-        }
-
-        // Create placeholder AI message for streaming
-        const aiMsgId = Date.now() + 1;
-        const aiMsg = {
-            id: aiMsgId,
-            content: '',
-            role: 'assistant',
-            time: new Date(),
-            isStreaming: true
-        };
-
-        const messagesWithPlaceholder = [...newMessages, aiMsg];
-        setMessages(messagesWithPlaceholder);
-        setStreamingMessageId(aiMsgId);
-
-        // Send via WebSocket with streaming callbacks
+        // Send via updated WebSocket
         socketService.sendMessage(
             {
-                message,
-                userId: user?.id || user?.email || 'anonymous',
-                sessionId: sessionId || `session_${currentSessionId || Date.now()}`,
-                conversationId: currentSessionId?.toString(),
-                files: files || []
+                content: message,
+                role: 'user',
+                time: new Date().toISOString()
             },
-            // onChunk - called for each streaming chunk
-            (content, meta) => {
-                setMessages(prev => prev.map(msg =>
-                    msg.id === aiMsgId
-                        ? { ...msg, content, isStreaming: true }
-                        : msg
-                ));
-            },
-            // onComplete - called when streaming finishes
+            // onMessage - called when CSV response arrives
             (data) => {
                 const finalMsg = {
-                    id: aiMsgId,
+                    id: Date.now(),
                     content: data.content,
                     role: 'assistant',
-                    time: new Date(),
-                    images: data.images || [],
-                    metadata: data.metadata || {},
-                    isStreaming: false
+                    time: new Date()
                 };
 
-                setMessages(prev => prev.map(msg =>
-                    msg.id === aiMsgId ? finalMsg : msg
-                ));
-
-                setSessions(prev => prev.map(s =>
-                    s.id === currentSessionId
-                        ? { ...s, messages: prev }
-                        : s
-                ));
-
-                setStreamingMessageId(null);
+                setMessages(prev => [...prev, finalMsg]);
                 setLoading(false);
             },
             // onError - called if error occurs
             (error) => {
                 const errorMsg = {
-                    id: aiMsgId,
+                    id: Date.now(),
                     content: '',
                     role: 'assistant',
                     time: new Date(),
-                    error: error,
-                    isStreaming: false
+                    error: error
                 };
 
-                setMessages(prev => prev.map(msg =>
-                    msg.id === aiMsgId ? errorMsg : msg
-                ));
-
-                setSessions(prev => prev.map(s =>
-                    s.id === currentSessionId
-                        ? { ...s, messages: prev }
-                        : s
-                ));
-
-                setStreamingMessageId(null);
+                setMessages(prev => [...prev, errorMsg]);
                 setLoading(false);
             }
         );

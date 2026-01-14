@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-main);
   color: #fff;
 }
 

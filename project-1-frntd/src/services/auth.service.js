@@ -43,5 +43,32 @@ export const authService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    async checkStatus() {
+        try {
+            const response = await fetch(API_CONFIG.AUTH.STATUS, {
+                credentials: 'include'
+            });
+
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (error) {
+            console.error("Auth status check failed:", error);
+            return null;
+        }
+    },
+
+    async logout() {
+        try {
+            await fetch(API_CONFIG.AUTH.LOGOUT, {
+                method: 'POST',
+                credentials: 'include'
+            });
+        } catch (error) {
+            console.error('Logout API call failed:', error);
+            throw error;
+        }
     }
 };
+

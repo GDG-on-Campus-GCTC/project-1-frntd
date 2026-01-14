@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { validateFile } from '../services/apiService';
+import { validateFile } from '../lib/utils';
 import './InputBox.css';
 
 const InputBox = ({ onSend, disabled = false }) => {

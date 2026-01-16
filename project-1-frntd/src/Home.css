@@ -9,7 +9,6 @@
 /* Sidebar */
 /* Sidebar - Floating Glass Design */
 .sidebar {
-    width: 260px;
     background: rgba(10, 10, 15, 0.4);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -19,6 +18,18 @@
     flex-direction: column;
     gap: 1rem;
     overflow-y: auto;
+    width: 260px;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar.closed {
+    width: 0;
+    padding: 0;
+    border: none;
+    overflow: hidden;
+    pointer-events: none;
 }
 
 .sidebar-top {
@@ -216,6 +227,7 @@
 /* Main */
 .main {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     overflow-y: auto;

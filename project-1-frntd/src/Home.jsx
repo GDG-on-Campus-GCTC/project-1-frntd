@@ -52,6 +52,8 @@ const subjects = [
 
 function Home() {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
+    const [chatToDelete, setChatToDelete] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const messagesEndRef = useRef(null);
     const chatSectionRef = useRef(null);
     const navigate = useNavigate();
@@ -139,7 +141,11 @@ function Home() {
                             <span>{session.name}</span>
                             <button
                                 className="delete-btn"
-                                onClick={(e) => handleDeleteSession(session.id, e)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setChatToDelete(session);
+                                    setShowDeleteModal(true);
+                                }}
                             >
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="M18 6L6 18M6 6l12 12" />
@@ -266,6 +272,46 @@ function Home() {
                     mouseInfluence={0.15}
                 />
             </main>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {showDeleteModal && (
+                    <motion.div
+                        className="modal-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="modal-content"
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        >
+                            <div className="modal-header">
+                                <div className="warning-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                        <line x1="12" y1="9" x2="12" y2="13" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
+                                </div>
+                                <h2>Delete Chat?</h2>
+                            </div>
+                            <p>Your entire chat <strong>{chatToDelete?.name}</strong> will be deleted. This action cannot be undone.</p>
+                            <div className="modal-actions">
+                                <button className="cancel-btn" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                                <button className="confirm-delete-btn" onClick={async () => {
+                                    const id = chatToDelete.id;
+                                    setChatToDelete(null);
+                                    setShowDeleteModal(false);
+                                    await handleDeleteSession(id, { stopPropagation: () => { } });
+                                }}>Delete</button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div >
     );
 }

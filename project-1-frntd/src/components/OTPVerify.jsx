@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ArrowLeft, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
 import logo from '../assets/logo.png';
 import './Login.css';
 
@@ -45,9 +46,10 @@ const OTPVerify = () => {
 
         if (code === '123456') { // Mock success
             sessionStorage.setItem('isLoggedIn', 'true');
+            toast.success('Successfully verified!');
             navigate('/home');
         } else {
-            alert('Invalid OTP (Try 123456)');
+            toast.error('Invalid OTP (Try 123456)');
         }
     };
 

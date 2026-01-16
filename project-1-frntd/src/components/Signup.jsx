@@ -1,3 +1,9 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Phone, Lock, User, ArrowLeft, Chrome } from 'lucide-react';
+import { toast } from 'sonner';
+import logo from '../assets/logo.png';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -32,6 +38,42 @@ const Signup = () => {
       glow.style.top = `${e.clientY}px`;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        const { firstName, lastName, email, password } = formData;
+
+        // Basic validation
+        if (!firstName || !lastName || !email || !password) {
+            setError('All fields are required');
+            setLoading(false);
+            return;
+        }
+
+        // Domain Validation for GCET
+        const domainPattern = /@gcet\.edu\.in$/;
+        if (!domainPattern.test(email)) {
+            setError('Please use your college email ending with @gcet.edu.in');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            await authService.register(formData);
+            toast.success('Account created! Please sign in.');
+            navigate('/login');
+        } catch (err) {
+            setError(err.message || 'Registration failed');
+            toast.error(err.message || 'Registration failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="login-page">
     window.addEventListener('mousemove', moveGlow);
     return () => window.removeEventListener('mousemove', moveGlow);
   }, []);

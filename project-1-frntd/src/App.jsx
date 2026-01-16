@@ -32,9 +32,7 @@ function AppRoutes() {
             <Route path="/" element={<Landing />} />
 
             {/* Login page */}
-            <Route path="/login" element={
-                isLoggedIn ? <Navigate to="/home" replace /> : <Login />
-            } />
+            <Route path="/login" element={<Login />} />
             <Route path="/login-failure" element={<LoginFailure />} />
 
             {/* Signup page */}

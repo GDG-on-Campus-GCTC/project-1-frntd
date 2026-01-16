@@ -105,11 +105,15 @@ function Home() {
 
             {/* Sidebar */}
             <motion.aside
-                className="sidebar"
-                initial={{ x: -280 }}
-                animate={{ x: sidebarOpen ? 0 : -280 }}
-                transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+                className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}
+                initial={false}
+                animate={{
+                    width: sidebarOpen ? 260 : 0,
+                    opacity: sidebarOpen ? 1 : 0
+                }}
+                transition={{ type: 'spring', damping: 20, stiffness: 120 }}
             >
+
                 <div className="sidebar-top">
                     <img src={logo} alt="GCTC" />
                     <h2>GCTC Workspace</h2>

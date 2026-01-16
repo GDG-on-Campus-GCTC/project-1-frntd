@@ -1,0 +1,94 @@
+@import './Login.css';
+
+/* Layout flip */
+.signup-layout {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .signup-layout {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
+
+/* Cursor glow */
+.glow-mouse {
+  position: fixed;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(
+    circle,
+    rgba(59,130,246,0.25),
+    transparent 70%
+  );
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+/* Remove unwanted purple center glow */
+.glow-pink {
+  display: none;
+}
+
+/* Signup card */
+.signin-card {
+  background: #0b1220;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: box-shadow 0.4s ease;
+}
+
+/* Google button */
+.google-btn {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1f2937;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+.google-btn:hover {
+  box-shadow: 0 0 20px rgba(59,130,246,0.4);
+}
+
+/* Feature list hover animation */
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.feature-item:hover {
+  background: rgba(59,130,246,0.06);
+}
+
+.feature-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b82f6;
+  box-shadow: 0 0 8px rgba(59,130,246,0.6);
+}
+
+/* Error */
+.login-error {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.4);
+  color: #fca5a5;
+  padding: 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}

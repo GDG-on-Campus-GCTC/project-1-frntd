@@ -60,7 +60,7 @@ export const chatService = {
 
     async deleteChat(chatId) {
         try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}/chat/${chatId}`, {
+            const response = await fetch(`${API_CONFIG.BASE_URL}/chat/delete/${chatId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });

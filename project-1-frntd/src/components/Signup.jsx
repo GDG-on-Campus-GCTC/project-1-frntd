@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Lock, User, ArrowLeft, Chrome } from 'lucide-react';
+import { toast } from 'sonner';
 import logo from '../assets/logo.png';
 import { API_CONFIG } from '../config/api-config';
 import { authService } from '../services/auth.service';
@@ -46,13 +47,11 @@ const Signup = () => {
 
         try {
             await authService.register(formData);
-            // On success, redirect to login or home. 
-            // Usually login is required after signup unless auto-login is implemented.
-            // Let's redirect to Login for security/verification flow transparency
-            alert('Account created! Please sign in.');
+            toast.success('Account created! Please sign in.');
             navigate('/login');
         } catch (err) {
             setError(err.message || 'Registration failed');
+            toast.error(err.message || 'Registration failed');
         } finally {
             setLoading(false);
         }

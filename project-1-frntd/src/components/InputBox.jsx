@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { validateFile } from '../lib/utils';
+import { toast } from 'sonner';
 import './InputBox.css';
 
 const InputBox = ({ onSend, disabled = false }) => {
@@ -36,7 +37,7 @@ const InputBox = ({ onSend, disabled = false }) => {
             if (validation.valid) {
                 validFiles.push(file);
             } else {
-                setFileError(validation.error);
+                toast.error(validation.error);
                 return;
             }
         }
@@ -95,17 +96,7 @@ const InputBox = ({ onSend, disabled = false }) => {
                 </div>
             )}
 
-            {/* Error Message */}
-            {fileError && (
-                <div className="file-error">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="8" x2="12" y2="12" />
-                        <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                    {fileError}
-                </div>
-            )}
+
 
             {/* Input Area */}
             <div className="input-area">

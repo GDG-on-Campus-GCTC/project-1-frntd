@@ -8,10 +8,12 @@ import Signup from './components/Signup';
 import OTPVerify from './components/OTPVerify';
 import LoginFailure from './components/LoginFailure';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { Toaster } from 'sonner';
 
 function App() {
     return (
         <AuthProvider>
+            <Toaster position="top-center" richColors duration={5000} />
             <AppRoutes />
         </AuthProvider>
     );

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import socketService from '../services/socketService';
 import { chatService } from '../services/chatService';
+import { toast } from 'sonner';
 
 export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLatestMessage) => {
     const [messages, setMessages] = useState([]);
@@ -70,6 +71,7 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
                 }
             } catch (error) {
                 console.error('Failed to fetch sessions:', error);
+                toast.error(error.message || 'Failed to fetch sessions');
             }
         };
         fetchSessions();
@@ -139,6 +141,7 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
 
                 setMessages(prev => [...prev, errorMsg]);
                 setLoading(false);
+                toast.error(error?.message || error || 'Something went wrong');
             }
         );
     };
@@ -181,6 +184,7 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
 
         } catch (error) {
             console.error('Failed to initialize new chat:', error);
+            toast.error(error.message || 'Failed to initialize new chat');
         } finally {
             setLoading(false);
             closeSidebarIfMobile();
@@ -198,6 +202,7 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
             setMessages(transformed.messages);
         } catch (error) {
             console.error('Failed to load session history:', error);
+            toast.error(error.message || 'Failed to load session history');
             setMessages([]);
         } finally {
             setLoading(false);
@@ -216,6 +221,7 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
             }
         } catch (error) {
             console.error('Failed to delete session:', error);
+            toast.error(error.message || 'Failed to delete session');
             // Optionally show error to user
         }
     };

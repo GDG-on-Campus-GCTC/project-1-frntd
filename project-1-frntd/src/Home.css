@@ -1,6 +1,6 @@
 .home {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     background: #1a1a1a;
     color: #fff;
     overflow: hidden;
@@ -243,10 +243,11 @@
 
 /* Chat - Fixed Layout */
 .chat {
-    min-height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
 }
 
 .chat-container {
@@ -358,7 +359,8 @@
     .sidebar {
         position: fixed;
         width: 280px;
-        height: 100vh;
+        max-width: 80%;
+        height: 100dvh;
         z-index: 1000;
         box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
         border-right: none;
@@ -383,7 +385,7 @@
     }
 
     .chat-container {
-        padding: 4rem 0.75rem 1rem;
+        padding: 4rem 1rem 120px;
     }
 
     .welcome {

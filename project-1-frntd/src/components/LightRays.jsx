@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
 import { Renderer, Program, Triangle, Mesh } from 'ogl';
 import './LightRays.css';
 
@@ -31,7 +31,7 @@ const getAnchorAndDir = (origin, w, h) => {
     }
 };
 
-const LightRays = ({
+const LightRays = memo(({
     raysOrigin = 'top-center',
     raysColor = DEFAULT_COLOR,
     raysSpeed = 1,
@@ -54,32 +54,10 @@ const LightRays = ({
     const animationIdRef = useRef(null);
     const meshRef = useRef(null);
     const cleanupFunctionRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
-    const observerRef = useRef(null);
+    const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
         if (!containerRef.current) return;
-
-        observerRef.current = new IntersectionObserver(
-            entries => {
-                const entry = entries[0];
-                setIsVisible(entry.isIntersecting);
-            },
-            { threshold: 0.1 }
-        );
-
-        observerRef.current.observe(containerRef.current);
-
-        return () => {
-            if (observerRef.current) {
-                observerRef.current.disconnect();
-                observerRef.current = null;
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!isVisible || !containerRef.current) return;
 
         if (cleanupFunctionRef.current) {
             cleanupFunctionRef.current();
@@ -284,7 +262,10 @@ void main() {
                 }
             };
 
-            window.addEventListener('resize', updatePlacement);
+            const resizeObserver = new ResizeObserver(() => {
+                updatePlacement();
+            });
+            resizeObserver.observe(containerRef.current);
             updatePlacement();
             animationIdRef.current = requestAnimationFrame(loop);
 
@@ -294,7 +275,7 @@ void main() {
                     animationIdRef.current = null;
                 }
 
-                window.removeEventListener('resize', updatePlacement);
+                resizeObserver.disconnect();
 
                 if (renderer) {
                     try {
@@ -327,7 +308,7 @@ void main() {
             }
         };
     }, [
-        isVisible, raysOrigin, raysColor, raysSpeed, lightSpread, rayLength,
+        raysOrigin, raysColor, raysSpeed, lightSpread, rayLength,
         pulsating, fadeDistance, saturation, followMouse, mouseInfluence, noiseAmount, distortion
     ]);
 
@@ -374,6 +355,6 @@ void main() {
     }, [followMouse]);
 
     return <div ref={containerRef} className={`light-rays-container ${className}`.trim()} />;
-};
+});
 
 export default LightRays;

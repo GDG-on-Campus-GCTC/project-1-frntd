@@ -1,9 +1,9 @@
 .home {
     display: flex;
     height: 100vh;
-    background: #1a1a1a;
     color: #fff;
     overflow: hidden;
+    position: relative;
 }
 
 /* Sidebar */
@@ -20,16 +20,26 @@
     overflow-y: auto;
     width: 260px;
     flex-shrink: 0;
-    transition: width 0.3s ease;
     overflow: hidden;
+    will-change: width, transform, opacity, padding;
+    z-index: 10;
+    position: relative;
 }
 
 .sidebar.closed {
-    width: 0;
+    opacity: 0;
     padding: 0;
     border: none;
-    overflow: hidden;
     pointer-events: none;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .sidebar.closed {
+        opacity: 1;
+        /* Keep opacity 1 on mobile since we use x translation */
+        pointer-events: none;
+    }
 }
 
 .sidebar-top {
@@ -234,6 +244,7 @@
     overflow-x: hidden;
     scroll-behavior: smooth;
     position: relative;
+    z-index: 10;
 }
 
 .menu-btn {

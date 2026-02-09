@@ -1,37 +1,70 @@
 .subject-card {
-    padding: 2rem;
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.25rem;
+    padding: 1.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.home.light .subject-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+
+.subject-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
 }
 
 .subject-card:hover {
+    transform: translateY(-8px) scale(1.02);
     border-color: var(--color);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(var(--color-rgb), 0.2);
+}
+
+.subject-card:hover::before {
+    opacity: 0.05;
+}
+
+.subject-card>* {
+    position: relative;
+    z-index: 1;
 }
 
 .card-emoji {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
 }
 
 .subject-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
+    color: #fff;
 }
 
 .subject-card p {
-    color: #a0a0a0;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
 }
 
 .card-footer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #6b6b6b;
-    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+    font-weight: 600;
 }

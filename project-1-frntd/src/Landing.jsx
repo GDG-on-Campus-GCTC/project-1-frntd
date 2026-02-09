@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Hexagon, Circle, Triangle, Square, Database, Shield } from 'lucide-react';
 import logo from './assets/logo.png';
+import InstallPWA from './components/InstallPWA';
 import './Landing.css';
 
 const Landing = () => {
@@ -54,15 +55,18 @@ const Landing = () => {
                     className="hero-content"
                 >
                     <h1 className="hero-title">
-                        Master Every<br />
+                        Master EVERY<br />
                         Subject with<br />
                         AI-Powered<br />
                         Intelligence
                     </h1>
-                    <button className="cta-button" onClick={() => navigate('/login')}>
-                        Get Started
-                        <ArrowRight size={24} />
-                    </button>
+                    <div className="hero-actions">
+                        <button className="cta-button" onClick={() => navigate('/login')}>
+                            Get Started
+                            <ArrowRight size={24} />
+                        </button>
+                        <InstallPWA />
+                    </div>
                 </motion.div>
 
                 <div className="radar-wrapper">

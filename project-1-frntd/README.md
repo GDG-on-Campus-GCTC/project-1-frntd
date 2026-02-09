@@ -1,3 +1,4 @@
+
 # GCTC Study Hub
 
 An AI-powered learning companion for GCTC exam preparation. This platform provides students with intelligent study assistance using a custom AI model trained on previous exam papers.

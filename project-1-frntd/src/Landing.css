@@ -11,12 +11,25 @@
 
 /* Nav Styles */
 .landing-nav {
-    padding: 2.5rem 4rem;
+    padding: clamp(1rem, 5vw, 2rem) clamp(1rem, 5vw, 4rem);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.landing-nav::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 10, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: -1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nav-container {
@@ -102,37 +115,52 @@
 }
 
 .hero-title {
-    font-size: 5.5rem;
-    font-weight: 800;
-    line-height: 1.05;
-    margin-bottom: 2.5rem;
-    letter-spacing: -0.03em;
-    background: linear-gradient(to bottom, #fff 40%, rgba(255, 255, 255, 0.6));
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
+    letter-spacing: -0.04em;
+    background: linear-gradient(to bottom, #fff 40%, rgba(255, 255, 255, 0.7));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
+.hero-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .hero-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
 .cta-button {
-    background: #000;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 1.2rem 2.4rem;
-    border-radius: 100px;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 1.1rem 2.2rem;
+    border-radius: var(--radius-full);
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     width: fit-content;
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
 }
 
 .cta-button:hover {
-    background: #111;
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: scale(1.02) translateY(-4px);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+    background: var(--accent-indigo);
+    color: #fff;
 }
 
 /* Radar Visualization */
@@ -146,8 +174,8 @@
 
 .radar-container {
     position: relative;
-    width: 650px;
-    height: 650px;
+    width: min(90vw, 650px);
+    height: min(90vw, 650px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -161,42 +189,44 @@
 }
 
 .circle-1 {
-    width: 160px;
-    height: 160px;
+    width: 25%;
+    height: 25%;
 }
 
 .circle-2 {
-    width: 320px;
-    height: 320px;
+    width: 50%;
+    height: 50%;
 }
 
 .circle-3 {
-    width: 480px;
-    height: 480px;
+    width: 75%;
+    height: 75%;
 }
 
 .circle-4 {
-    width: 640px;
-    height: 640px;
+    width: 100%;
+    height: 100%;
 }
 
 .radar-center {
     text-align: center;
     z-index: 10;
-    /* Lower than avatars to prevent blurring them */
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 50%;
-    width: 200px;
-    height: 200px;
+    width: clamp(120px, 30vw, 200px);
+    height: clamp(120px, 30vw, 200px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 0 50px rgba(139, 92, 246, 0.1);
 }
 
 .radar-center h2 {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 8vw, 3.5rem);
     margin: 0;
     font-weight: 700;
     background: linear-gradient(to bottom, #fff, #bbb);
@@ -207,7 +237,7 @@
 
 .radar-center p {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     margin-top: 0.25rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -342,26 +372,16 @@
 
 /* Partners Footer Removed */
 
-@media (max-width: 1280px) {
-    .hero-title {
-        font-size: 4rem;
-    }
-}
-
 @media (max-width: 1024px) {
     .landing-main {
         grid-template-columns: 1fr;
         text-align: center;
         padding: 4rem 2rem;
-        gap: 6rem;
+        gap: 4rem;
     }
 
     .hero-content {
         margin: 0 auto;
-    }
-
-    .hero-title {
-        font-size: 3.5rem;
     }
 
     .cta-button {
@@ -370,12 +390,42 @@
 
     .radar-container {
         width: 100%;
-        height: 500px;
-        transform: scale(0.8);
+        height: 480px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
     }
 
-    .landing-footer {
-        gap: 3rem;
-        padding: 4rem 2rem;
+    .landing-nav {
+        padding: 1rem 1.5rem;
+    }
+
+    .nav-logo span {
+        font-size: 1.1rem;
+    }
+
+    .btn-join {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.85rem;
+    }
+
+    .landing-main {
+        padding: 3rem 1.5rem;
+        min-height: auto;
+    }
+
+    .hero-title {
+        margin-bottom: 2rem;
+    }
+
+    .radar-container {
+        height: 380px;
+    }
+
+    .radar-circle {
+        border-color: rgba(255, 255, 255, 0.05);
     }
 }

@@ -17,9 +17,9 @@
     --scriptor-charcoal: #FFFFFF;
     --scriptor-sidebar: #FFFFFF;
     --scriptor-border: rgba(0, 0, 0, 0.05);
-    --scriptor-text-main: #0F172A;
+    --scriptor-text-main: #1A1A1A;
     --scriptor-text-dim: #64748B;
-    --logo-filter: contrast(1.1) brightness(1.1);
+    --logo-filter: contrast(1.1) grayscale(1);
     --logo-blend: multiply;
 }
 
@@ -49,11 +49,11 @@
 }
 
 .home.light .mesh-gradient {
-    opacity: 0.8;
+    opacity: 0.9;
     background:
-        radial-gradient(circle at 15% 30%, rgba(192, 132, 252, 0.3) 0%, transparent 45%),
-        radial-gradient(circle at 85% 70%, rgba(96, 165, 250, 0.25) 0%, transparent 50%),
-        radial-gradient(circle at 50% 10%, rgba(139, 92, 246, 0.2) 0%, transparent 40%);
+        radial-gradient(circle at 10% 20%, rgba(192, 132, 252, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(96, 165, 250, 0.35) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.25) 0%, transparent 50%);
 }
 
 .g-logo-img {
@@ -360,13 +360,12 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    background: #fff;
+    background: transparent;
     color: #000;
     overflow: hidden;
 }
 
 .home.dark .main {
-    background: var(--scriptor-charcoal);
     color: #fff;
 }
 

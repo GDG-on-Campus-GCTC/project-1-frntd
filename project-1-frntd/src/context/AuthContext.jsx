@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { API_CONFIG } from '../config/api-config';
+import { authService } from '../services/auth.service';
 
 const AuthContext = createContext();
 
@@ -10,18 +10,13 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-                const response = await fetch(API_CONFIG.AUTH.STATUS, {
-                    credentials: 'include'
-                });
+                const userData = await authService.checkStatus();
 
-                if (response.ok) {
-                    const userData = await response.json();
+                if (userData) {
                     setUser(userData);
-                    // Also sync local storage if needed, or rely purely on backend
                     localStorage.setItem('user', JSON.stringify(userData));
                     sessionStorage.setItem('isLoggedIn', 'true');
                 } else {
-                    // clear session if backend says not logged in
                     setUser(null);
                     localStorage.removeItem('user');
                     sessionStorage.removeItem('isLoggedIn');
@@ -38,7 +33,6 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = (userData) => {
-        // Ensure user has an ID field
         const userWithId = {
             ...userData,
             id: userData.id || userData.email || `user_${Date.now()}`
@@ -50,19 +44,16 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch(API_CONFIG.AUTH.LOGOUT, {
-                method: 'POST', // or GET depending on backend, usually logout is POST or GET. Assuming GET or POST based on typical REST. User said "hit the api".
-                credentials: 'include'
-            });
+            await authService.logout();
         } catch (error) {
             console.error('Logout failed', error);
         } finally {
             setUser(null);
             localStorage.removeItem('user');
             sessionStorage.removeItem('isLoggedIn');
-            // Assuming the caller will handle navigation or state change affects the app
         }
     };
+
 
     return (
         <AuthContext.Provider value={{ user, loading, login, logout }}>

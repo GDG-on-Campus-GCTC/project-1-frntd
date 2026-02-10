@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
-// WebSocket Service for Real-time Streaming Communication
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
+// WebSocket Service for Real-time Communication
+const WS_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 const RECONNECTION_ATTEMPTS = 5;
 const RECONNECTION_DELAY = 2000;
 
@@ -9,14 +9,9 @@ class SocketService {
     constructor() {
         this.socket = null;
         this.isConnected = false;
-        this.messageCallbacks = new Map();
-        this.currentMessageId = null;
-        this.streamBuffer = '';
+        this.onMessageCallback = null;
     }
 
-    /**
-     * Initialize WebSocket connection
-     */
     connect() {
         if (this.socket?.connected) {
             return Promise.resolve();
@@ -24,20 +19,21 @@ class SocketService {
 
         return new Promise((resolve, reject) => {
             this.socket = io(WS_URL, {
-                transports: ['websocket'],
+                withCredentials: true,
+                transports: ['websocket', 'polling'],
                 reconnectionAttempts: RECONNECTION_ATTEMPTS,
                 reconnectionDelay: RECONNECTION_DELAY,
                 timeout: 10000,
             });
 
             this.socket.on('connect', () => {
-                console.log('✅ WebSocket connected');
+                console.log('WebSocket connected to CSV Backend');
                 this.isConnected = true;
                 resolve();
             });
 
             this.socket.on('disconnect', () => {
-                console.log('❌ WebSocket disconnected');
+                console.log('WebSocket disconnected');
                 this.isConnected = false;
             });
 
@@ -47,11 +43,12 @@ class SocketService {
                 reject(error);
             });
 
-            // Handle streaming events
-            this.socket.on('stream_start', this.handleStreamStart.bind(this));
-            this.socket.on('stream_chunk', this.handleStreamChunk.bind(this));
-            this.socket.on('stream_end', this.handleStreamEnd.bind(this));
-            this.socket.on('error', this.handleError.bind(this));
+            // Handle CSV backend response
+            this.socket.on('receive_message', (data) => {
+                if (this.onMessageCallback) {
+                    this.onMessageCallback(data);
+                }
+            });
         });
     }
 
@@ -67,13 +64,12 @@ class SocketService {
     }
 
     /**
-     * Send chat message with streaming response
-     * @param {Object} params - Message parameters
-     * @param {Function} onChunk - Callback for each streaming chunk
-     * @param {Function} onComplete - Callback when streaming completes
+     * Send chat message
+     * @param {Object} payload - Message payload
+     * @param {Function} onMessage - Callback for the response
      * @param {Function} onError - Callback for errors
      */
-    async sendMessage({ message, userId, sessionId, conversationId, files = [] }, onChunk, onComplete, onError) {
+    async sendMessage(payload, onMessage, onError) {
         if (!this.isConnected) {
             try {
                 await this.connect();
@@ -87,60 +83,8 @@ class SocketService {
             }
         }
 
-        // Generate unique message ID
-        const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        this.currentMessageId = messageId;
-        this.streamBuffer = '';
-
-        // Store callbacks
-        this.messageCallbacks.set(messageId, {
-            onChunk,
-            onComplete,
-            onError
-        });
-
-        // Convert files to Base64
-        const attachments = [];
-        if (files && files.length > 0) {
-            for (const file of files) {
-                try {
-                    const base64 = await this.fileToBase64(file);
-                    attachments.push({
-                        filename: file.name,
-                        content: base64,
-                        type: file.type,
-                        size: file.size
-                    });
-                } catch (error) {
-                    console.error('File conversion error:', error);
-                }
-            }
-        }
-
-        // Send message payload
-        const payload = {
-            message_id: messageId,
-            message,
-            user_id: userId || 'anonymous',
-            session_id: sessionId || null,
-            conversation_id: conversationId || null,
-            attachments: attachments.length > 0 ? attachments : undefined,
-            timestamp: new Date().toISOString()
-        };
-
-        this.socket.emit('chat_message', payload);
-
-        // Set timeout for response
-        setTimeout(() => {
-            if (this.messageCallbacks.has(messageId) && this.streamBuffer === '') {
-                this.handleError({
-                    message_id: messageId,
-                    message: 'Request timed out. Please try again.',
-                    code: 'TIMEOUT',
-                    retryable: true
-                });
-            }
-        }, 30000); // 30 second timeout
+        this.onMessageCallback = onMessage;
+        this.socket.emit('send_message', payload);
     }
 
     /**

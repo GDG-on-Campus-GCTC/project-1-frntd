@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import socketService from '../services/socketService';
 import { chatService } from '../services/chatService';
+import { API_CONFIG } from '../config/api-config';
 import { toast } from 'sonner';
 
 export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLatestMessage) => {
@@ -43,7 +44,7 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
         };
     }, []);
 
-    // Initialize WebSocket connection
+    // Initialize WebSocket connection (Keeping cleanup logic just in case, though we are using fetch for streaming now)
     useEffect(() => {
         socketService.connect().catch(err => {
             console.error('Failed to connect to WebSocket:', err);
@@ -82,8 +83,10 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
         return words.length > 30 ? words.substring(0, 30) + '...' : words;
     };
 
-    const handleSend = async ({ message, files }) => {
-        // Create user message
+    const handleSend = async ({ message, files, mode = 'lite' }) => {
+        if ((!message || !message.trim()) && files.length === 0) return;
+        if (loading) return;
+
         const userMsg = {
             id: Date.now(),
             content: message,
@@ -91,59 +94,101 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
             time: new Date()
         };
 
-        const newMessages = [...messages, userMsg];
-        setMessages(newMessages);
-        setLoading(true);
-
-        // Prepare payload: Use the pre-existing currentSessionId
-        const payload = {
-            content: message,
-            chatId: currentSessionId
+        const assistantMsgId = Date.now() + 1;
+        const assistantMsgPlaceholder = {
+            id: assistantMsgId,
+            content: '',
+            role: 'assistant',
+            time: new Date(),
+            isStreaming: true
         };
 
-        // Send via WebSocket
-        socketService.sendMessage(
-            payload,
-            // onMessage - called when response arrives
-            (data) => {
-                const finalMsg = {
-                    id: Date.now(),
-                    content: data.content,
-                    role: 'assistant',
-                    time: new Date()
-                };
+        // Optimistically add messages
+        setMessages(prev => [...prev, userMsg, assistantMsgPlaceholder]);
+        setLoading(true);
 
-                const updatedMessages = [...newMessages, finalMsg];
-                setMessages(updatedMessages);
-                setLoading(false);
+        try {
+            // Ensure we have a chat ID
+            let activeChatId = currentSessionId;
+            if (!activeChatId) {
+                try {
+                    const newChat = await chatService.createNewChat();
+                    activeChatId = newChat._id || newChat.chatId;
+                    setCurrentSessionId(activeChatId);
 
-                // Update session state (e.g., if title changed on first message)
-                setSessions(prev => prev.map(s =>
-                    s.id === currentSessionId
-                        ? {
-                            ...s,
-                            name: data.title || s.name,
-                            messages: updatedMessages,
-                            time: new Date()
-                        }
-                        : s
-                ));
-            },
-            // onError - called if error occurs
-            (error) => {
-                const errorMsg = {
-                    id: Date.now(),
-                    content: '',
-                    role: 'assistant',
-                    time: new Date(),
-                    error: error
-                };
-
-                setMessages(prev => [...prev, errorMsg]);
-                setLoading(false);
-                toast.error(error?.message || error || 'Something went wrong');
+                    // Add new session to list
+                    setSessions(prev => [{
+                        id: activeChatId,
+                        name: 'New Chat',
+                        messages: [],
+                        time: new Date()
+                    }, ...prev]);
+                } catch (error) {
+                    console.error('Failed to create new chat session:', error);
+                    throw new Error('Failed to start new chat');
+                }
             }
-        );
+
+            const response = await fetch(`${API_CONFIG.BASE_URL}/chat/stream`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    question: message,
+                    chatId: activeChatId,
+                    mode: mode
+                }),
+                credentials: 'include'
+            });
+
+            if (!response.ok) throw new Error('Stream failed');
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let accumulatedContent = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const text = decoder.decode(value, { stream: true });
+                accumulatedContent += text;
+
+                // Update the assistant message in state
+                setMessages(prev => prev.map(msg =>
+                    msg.id === assistantMsgId
+                        ? { ...msg, content: accumulatedContent }
+                        : msg
+                ));
+            }
+
+            // Final update to remove streaming flag
+            setMessages(prev => prev.map(msg =>
+                msg.id === assistantMsgId
+                    ? { ...msg, isStreaming: false }
+                    : msg
+            ));
+
+            // Refetch sessions to update title if it was a new chat or title changed
+            // Optional optimization: only do this if it was a new chat or every N messages
+            // const updatedSessions = await chatService.getChats();
+            // setSessions(updatedSessions.map(transformSession));
+
+        } catch (error) {
+            console.error('Error in streaming chat:', error);
+            setMessages(prev => prev.map(msg =>
+                msg.id === assistantMsgId
+                    ? {
+                        ...msg,
+                        isStreaming: false,
+                        content: msg.content || '', // Keep any partial content
+                        error: { message: error.message || 'Connection error. Please try again.', retryable: true }
+                    }
+                    : msg
+            ));
+            toast.error(error.message || 'Message failed to send');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleSubjectClick = (subject) => {
@@ -156,8 +201,17 @@ export const useChat = (closeSidebarIfMobile, scrollToChatSection, scrollToLates
     const handleRetry = (messageId) => {
         const msgIndex = messages.findIndex(m => m.id === messageId);
         if (msgIndex > 0) {
-            const userMsg = messages[msgIndex - 1];
-            setMessages(prev => prev.filter(m => m.id !== messageId));
+            const userMsg = messages[msgIndex - 1]; // Assuming previous message is the user prompt
+
+            // Remove the failed message and the user message to re-send
+            // Actually, better UX is to keep the user message and just retry sending.
+            // But handleSend adds a NEW user message.
+            // So we should remove both, or modify handleSend to accept 'retry' mode.
+            // Simplest: Remove both and call handleSend with content.
+
+            // Remove the error message and the preceding user message from UI
+            setMessages(prev => prev.filter((_, idx) => idx !== msgIndex && idx !== msgIndex - 1));
+
             handleSend({ message: userMsg.content, files: [] });
         }
     };

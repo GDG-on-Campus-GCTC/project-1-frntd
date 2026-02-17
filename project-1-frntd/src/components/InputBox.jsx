@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { validateFile } from '../lib/utils';
 import { toast } from 'sonner';
@@ -8,11 +8,25 @@ const InputBox = ({ onSend, disabled = false }) => {
     const [input, setInput] = useState('');
     const [files, setFiles] = useState([]);
     const [fileError, setFileError] = useState('');
+    const [mode, setMode] = useState('lite');
+    const [showModeMenu, setShowModeMenu] = useState(false);
     const fileInputRef = useRef(null);
+    const modeMenuRef = useRef(null);
+
+    // Handle clicking outside mode menu
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (modeMenuRef.current && !modeMenuRef.current.contains(event.target)) {
+                setShowModeMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleSend = () => {
         if (input.trim() || files.length > 0) {
-            onSend({ message: input.trim(), files });
+            onSend({ message: input.trim(), files, mode });
             setInput('');
             setFiles([]);
             setFileError('');
@@ -100,6 +114,45 @@ const InputBox = ({ onSend, disabled = false }) => {
 
             {/* Input Area */}
             <div className="input-area">
+                <div className="mode-selector" ref={modeMenuRef}>
+                    <button
+                        className={`mode-toggle ${mode}`}
+                        onClick={() => setShowModeMenu(!showModeMenu)}
+                        disabled={disabled}
+                        type="button"
+                    >
+                        {mode === 'pro' ? 'Pro' : 'Lite'}
+                        <svg className={showModeMenu ? 'rotate' : ''} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 15l-6-6-6 6" />
+                        </svg>
+                    </button>
+
+                    {showModeMenu && (
+                        <div className="mode-menu">
+                            <button
+                                className={`mode-option ${mode === 'lite' ? 'active' : ''}`}
+                                onClick={() => { setMode('lite'); setShowModeMenu(false); }}
+                            >
+                                <div className="option-info">
+                                    <span className="option-name">Lite</span>
+                                    <span className="option-desc">Fast & Efficient</span>
+                                </div>
+                                {mode === 'lite' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>}
+                            </button>
+                            <button
+                                className={`mode-option ${mode === 'pro' ? 'active' : ''}`}
+                                onClick={() => { setMode('pro'); setShowModeMenu(false); }}
+                            >
+                                <div className="option-info">
+                                    <span className="option-name">Pro</span>
+                                    <span className="option-desc">Detailed & Advanced</span>
+                                </div>
+                                {mode === 'pro' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>}
+                            </button>
+                        </div>
+                    )}
+                </div>
+
                 <button
                     className="file-upload-btn"
                     onClick={() => fileInputRef.current?.click()}

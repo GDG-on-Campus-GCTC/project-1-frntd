@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Chrome } from 'lucide-react';
 import { toast } from 'sonner';
 import logo from '../assets/logo.png';
 import { API_CONFIG } from '../config/api-config';
@@ -60,7 +59,7 @@ const Signup = () => {
               <motion.div
                 className="signin-card"
                 whileHover={{
-                  boxShadow: '0 0 60px rgba(59,130,246,0.35)',
+                  boxShadow: '0 8px 32px rgba(99,102,241,0.2)',
                 }}
               >
                 <div className="card-content">
@@ -86,7 +85,7 @@ const Signup = () => {
                     className="google-btn"
                     onClick={handleGoogleSignup}
                   >
-                    <Chrome size={20} className="google-icon-svg" />
+                    <img src="/google-icon.svg" alt="Google" className="google-icon" />
                     Sign up with Google
                   </button>
 
@@ -120,7 +119,7 @@ const Signup = () => {
                   {[
                     {
                       text: 'Easy access to essential exam resources',
-                      color: 'rgba(59,130,246,0.8)',
+                      color: 'rgba(99,102,241,0.8)',
                     },
                     {
                       text: 'Intelligent study assistance to support your progress',

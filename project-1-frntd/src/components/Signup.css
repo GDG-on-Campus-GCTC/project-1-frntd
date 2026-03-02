@@ -14,51 +14,32 @@
 /* Cursor glow */
 .glow-mouse {
   position: fixed;
-  width: 260px;
-  height: 260px;
+  width: 300px;
+  height: 300px;
   background: radial-gradient(
     circle,
-    rgba(59,130,246,0.25),
+    rgba(99, 102, 241, 0.18),
+    rgba(139, 92, 246, 0.08),
     transparent 70%
   );
   pointer-events: none;
   transform: translate(-50%, -50%);
   z-index: 0;
+  filter: blur(100px);
 }
 
-/* Remove unwanted purple center glow */
-.glow-pink {
+/* Remove unwanted extra glow orbs */
+.glow-pink,
+.glow-blue {
   display: none;
 }
 
-/* Signup card */
+/* Signup card — matches landing glass style */
 .signin-card {
-  background: #0b1220;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.08);
-  transition: box-shadow 0.4s ease;
-}
-
-/* Google button */
-.google-btn {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    border-radius: 0.5rem;
-    background-color: #ffffff;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #1f2937;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-.google-btn:hover {
-  box-shadow: 0 0 20px rgba(59,130,246,0.4);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.3s ease;
 }
 
 /* Feature list hover animation */
@@ -72,23 +53,24 @@
 }
 
 .feature-item:hover {
-  background: rgba(59,130,246,0.06);
+  background: rgba(99, 102, 241, 0.06);
 }
 
 .feature-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #3b82f6;
-  box-shadow: 0 0 8px rgba(59,130,246,0.6);
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
 }
 
 /* Error */
 .login-error {
-  background: rgba(239,68,68,0.12);
-  border: 1px solid rgba(239,68,68,0.4);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
   color: #fca5a5;
   padding: 0.6rem;
-  border-radius: 6px;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
   margin-bottom: 1rem;
 }
